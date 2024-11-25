@@ -1,53 +1,61 @@
-# Next.js & NextUI Template
+# Room Booking System
 
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
+A modern, fast, and clean solution for managing room reservations with ease. Built using **Next.js**, **Tailwind CSS**, and **NextUI**, this system provides an efficient and streamlined platform for room booking and management.
 
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
+---
 
-## Technologies Used
+## Features
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+### User-Focused Functionality
+- **Room Booking**: Users can book rooms easily using a simple and intuitive interface.
+- **Room Status Screens**:
+- Interactive screens outside each room display their current status (Busy/Free).
+- Show real-time availability and the duration of bookings.
+- Allow users to book the room directly from the screen.
+- Can be displayed on any device by accessing the URL `/display/[room_number]` (e.g., `localhost:3000/display/4516`).
 
-## How to Use
+### Admin Dashboard
+- **Room Management**:
+- Add, edit, or delete room configurations.
+- Monitor bookings and adjust schedules in real-time.
+- **Streamlined User Experience**: The dashboard is designed to be clean, organized, and intuitive.
 
-### Use the template with create-next-app
+---
 
-To create a new project based on this template using `create-next-app`, run the following command:
+## Tech Stack
+- **[Next.js](https://nextjs.org/)**
+- **[Tailwind CSS](https://tailwindcss.com/)**
+- **[NextUI](https://nextui.org/)**
+<!-- - **[better-sqlite3](https://www.npmjs.com/package/better-sqlite3)** -->
 
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
-```
+---
 
-### Install dependencies
+## Installation
 
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+1. Clone the repository:
+ ```bash
+ git clone https://github.com/JakeDucati/room-booking-system.git
+ ```
+2. Install dependencies:
+ ```bash
+ npm i
+ ```
+3. Run the development server:
+ ```bash
+ npm run dev
+ ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser for testing.
 
-```bash
-npm install
-```
+---
 
-### Run the development server
+## Customization
 
-```bash
-npm run dev
-```
+To configure the system for your needs:
+1. **Room Configuration**: Use the admin dashboard to add or modify room details.
+2. **Environment Variables**: Update any required variables in the `.env.local` file.
 
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+---
 
 ## License
 
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+This project is licensed under the [MIT License](LICENSE).
