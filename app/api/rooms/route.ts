@@ -6,6 +6,7 @@ export async function GET(req: Request) {
             start: '2024-11-23T08:00:00',
             end: '2024-11-23T10:00:00',
             host: 'John Doe',
+            type: 'Classroom'
         },
         {
             roomNumber: 1420,
@@ -13,6 +14,7 @@ export async function GET(req: Request) {
             start: '2024-11-23T09:00:00',
             end: '2024-11-23T11:00:00',
             host: 'Jane Smith',
+            type: 'Conference'
         },
     ];
 

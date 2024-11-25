@@ -8,7 +8,8 @@ type RoomData = {
     status: "busy" | "free",
     start: string,
     end: string,
-    host: string
+    host: string,
+    roomType: string
 }
 
 export default function RoomDisplay({ params }: { params: { roomNumber: string } }) {
@@ -35,21 +36,33 @@ export default function RoomDisplay({ params }: { params: { roomNumber: string }
     }
 
     return (
-        <Card>
-            <div className={`rounded-full size-72 flex border-8 ${room.status === "busy" ? "border-red-600" : "border-green-600"}`}>
-                <div className="text-4xl m-auto flex flex-col">
-                    <div>
+        <Card className="p-9 flex">
+            <div className="flex gap-4">
+                <div className={`rounded-full size-72 flex border-8 ${room.status === "busy" ? "border-red-600" : "border-green-600"}`}>
+                    <div className="text-6xl m-auto flex flex-col">
+                        {room.status === "busy" ? "Busy" : "Free"}
+                    </div>
+                </div>
+                <div>
+                    <div className="text-5xl">
+                        {room.roomType}
                         {room.roomNumber}
                     </div>
-                    <div>
-                        {room.status}
+                    <div className="text-xl">
+                        Until
+                        &nbsp;
+                        {room.status === "busy" && new Date(room.end).toLocaleString()}
                     </div>
                 </div>
             </div>
+            <div>
+                
+            </div>
+
             {/* <p className="text-lg font-semibold">Host: {room.host}</p>
                 <p className="text-sm text-gray-600">Status: <span className={room.status === "busy" ? "text-red-600" : "text-green-600"}>{room.status}</span></p>
                 <p className="text-sm text-gray-600">Start: {new Date(room.start).toLocaleString()}</p>
-                <p className="text-sm text-gray-600">End: {new Date(room.end).toLocaleString()}</p> */}
+            */}
         </Card>
     )
 }
