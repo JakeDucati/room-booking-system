@@ -36,7 +36,7 @@ export default function RoomDisplay({ params }: { params: { roomNumber: string }
     }
 
     return (
-        <div className="flex gap-6">
+        <div className="flex gap-6 p-6">
             <Card className="p-9 flex w-10/12">
                 <div className="flex gap-4">
                     <div className={`rounded-full min-w-72 min-h-72 flex border-8 ${room.status === "busy" ? "border-red-600" : "border-green-600"}`}>
