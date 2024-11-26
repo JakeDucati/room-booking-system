@@ -1,8 +1,9 @@
 "use client";
 
-import { Modal } from "@nextui-org/modal";
-import { Card, Spinner } from "@nextui-org/react";
+import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
+import { Button, Card, Spinner } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type Room = {
     roomNumber: number;
@@ -37,7 +38,12 @@ function RoomCalendarItem({
                 </div>
                 <div className="text-sm -mt-1">Capacity: {capacity}</div>
             </div>
-            <Card className="p-1 cursor-pointer" isPressable isHoverable>
+            <Card
+                className="p-1 cursor-pointer"
+                // onPress={onOpen}
+                isPressable
+                isHoverable
+            >
                 Host: {host} | {start} - {end}
             </Card>
         </div>
@@ -48,6 +54,8 @@ export default function Home() {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
     useEffect(() => {
         const fetchRooms = async () => {
             try {
@@ -57,6 +65,7 @@ export default function Home() {
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching room data:", error);
+                toast("Error fetching room data!");
                 setLoading(false);
             }
         };
@@ -70,6 +79,26 @@ export default function Home() {
 
     return (
         <>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+                            <ModalBody>
+                                <p>Text</p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onPress={onClose}>
+                                    Close
+                                </Button>
+                                <Button color="primary" onPress={onClose}>
+                                    Action
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
             <header></header>
             <section>
                 {rooms.map((room) => (
