@@ -3,8 +3,8 @@ export async function GET(req: Request) {
         {
             roomNumber: 1412,
             status: 'busy',
-            start: '2024-11-23T08:00:00',
-            end: '2024-11-23T10:00:00',
+            start: '2024-11-23T08:00',
+            end: '2024-11-23T10:00',
             host: 'John Doe',
             type: 'Classroom',
             capacity: 24
@@ -12,8 +12,8 @@ export async function GET(req: Request) {
         {
             roomNumber: 1420,
             status: 'free',
-            start: '2024-11-23T09:00:00',
-            end: '2024-11-23T11:00:00',
+            start: '2024-11-23T09:00',
+            end: '2024-11-23T11:00',
             host: 'Jane Smith',
             type: 'Conference',
             capacity: 48
