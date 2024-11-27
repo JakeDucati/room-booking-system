@@ -1,30 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { Card } from "@nextui-org/react";
-
-type RoomData = {
-    roomNumber: number,
-    status: "busy" | "free",
-    start: string,
-    end: string,
-    host: string,
-    type: string
-}
+import { findRoomByNumber, RoomData } from "@/app/api/rooms/fetchRoomData";
 
 export default function RoomDisplay({ params }: { params: { roomNumber: string } }) {
     const [room, setRoom] = useState<RoomData | null>(null);
     const roomNumber = parseInt(params.roomNumber);
 
     useEffect(() => {
-        const fetchRoomData = async () => {
-            const response = await fetch("/api/rooms");
-            const rooms: RoomData[] = await response.json();
-            const foundRoom = rooms.find((room) => room.roomNumber === roomNumber);
-            setRoom(foundRoom || null);
-        }
+        const getRoomData = async () => {
+            try {
+                const foundRoom = await findRoomByNumber(roomNumber);
+                setRoom(foundRoom);
+            } catch (error) {
+                console.error("Error fetching room data:", error);
+                setRoom(null);
+            }
+        };
 
-        fetchRoomData();
+        getRoomData();
     }, [roomNumber]);
 
     if (!room) {
@@ -36,37 +31,57 @@ export default function RoomDisplay({ params }: { params: { roomNumber: string }
     }
 
     return (
-        <div className="flex gap-6 p-6">
-            <Card className="p-9 flex w-10/12">
-                <div className="flex gap-4">
-                    <div className={`rounded-full min-w-72 min-h-72 flex border-8 ${room.status === "busy" ? "border-red-600" : "border-green-600"}`}>
-                        <div className="text-6xl m-auto flex flex-col">
-                            {room.status === "busy" ? "Busy" : "Free"}
+        <div className="flex flex-col gap-6 p-6 h-full">
+            <Card className="p-9 flex w-full min-h-min">
+                <div className="flex justify-between">
+                    <div className="flex gap-10">
+                        <div
+                            className={`rounded-full min-w-72 min-h-72 flex border-8 ${room.status === "busy"
+                                ? "border-red-600"
+                                : room.status === "free"
+                                    ? "border-green-600"
+                                    : "border-amber-600"
+                                }`}
+                        >
+                            <div className={`m-auto flex flex-col ${room.status === "unconfirmed" ? "text-4xl" : "text-6xl"}`}>
+                                {room.status === "busy"
+                                    ? "Busy"
+                                    : room.status === "free"
+                                        ? "Free"
+                                        : "Unconfirmed"}
+                            </div>
+                        </div>
+                        <div className="flex flex-col justify-center gap-10">
+                            <div>
+                                <div className="text-5xl mb-2">
+                                    {room.type + " " + room.roomNumber}
+                                </div>
+                                <div className="text-xl">
+                                    Until {room.status === "busy" && new Date(room.end).toLocaleString()}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-xl">
+                                    {room.event}
+                                </div>
+                                <div className="text-xl">
+                                    Host: {room.host}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <div className="text-5xl mb-2">
-                            {room.type}
-                            &nbsp;
-                            {room.roomNumber}
-                        </div>
-                        <div className="text-xl">
-                            Until
-                            &nbsp;
-                            {room.status === "busy" && new Date(room.end).toLocaleString()}
+                    <div className="w-1/4 right-0 my-auto">
+                        <div className="text-2xl animate-pulse">
+                            {room.status === "unconfirmed" && ("This room may be available soon if the host does not check in!")}
                         </div>
                     </div>
                 </div>
-                {/* <p className="text-lg font-semibold">Host: {room.host}</p>
-                <p className="text-sm text-gray-600">Status: <span className={room.status === "busy" ? "text-red-600" : "text-green-600"}>{room.status}</span></p>
-                <p className="text-sm text-gray-600">Start: {new Date(room.start).toLocaleString()}</p>
-            */}
             </Card>
-            <Card className="p-9 w-1/5">
+            <Card className="p-9 w-full h-full">
                 <div>
                     quick schedule area goes here
                 </div>
             </Card>
         </div>
-    )
+    );
 }
