@@ -134,6 +134,7 @@ export default function Home() {
                         label="Search"
                     />
                 </div>
+                {/* add theme switch */}
                 <div className="w-full flex justify-center items-center">
                     <div className="text-4xl">
                         Room Booking
