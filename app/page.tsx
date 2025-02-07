@@ -1,12 +1,11 @@
 "use client";
 
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
-import { Button, Card, Input, Spinner, Tooltip } from "@nextui-org/react";
+import { Button, Card, Input, Spinner, Tooltip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-type Room = {
+interface Room {
     roomNumber: number;
     status: string;
     start: string;
@@ -18,10 +17,10 @@ type Room = {
 
 function RoomCalendarItem({
     room,
-    onClick,
+    onPress,
 }: {
     room: Room;
-    onClick: (room: Room) => void;
+    onPress: (room: Room) => void;
 }) {
     return (
         <div className="flex h-16 border-y p-1">
@@ -50,7 +49,7 @@ function RoomCalendarItem({
                 className="p-1 cursor-pointer"
                 isPressable
                 isHoverable
-                onClick={() => onClick(room)}
+                onPress={() => onPress(room)}
             >
                 Host: {room.host} | {room.start} - {room.end}
             </Card>
@@ -146,7 +145,7 @@ export default function Home() {
                     <RoomCalendarItem
                         key={room.roomNumber}
                         room={room}
-                        onClick={handleCardClick}
+                        onPress={handleCardClick}
                     />
                 ))}
             </section>
