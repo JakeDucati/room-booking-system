@@ -13,7 +13,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import { Plus, Projector } from "lucide-react";
+import { AirVent, Plug, Plus, Projector, Video } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -45,9 +45,20 @@ function RoomCalendarItem({
           </div>
           <div className="text-sm -mt-1 flex items-center gap-2">
             Capacity: {room.capacity}{" "}
-            <Tooltip content="A/V Equipment">
-              <Projector />
-            </Tooltip>
+            <div className="flex items-center gap-1">
+              <Tooltip content="A/V Equipment">
+                <Projector />
+              </Tooltip>
+              <Tooltip content="Video Call">
+                <Video />
+              </Tooltip>
+              <Tooltip content="Climate Controls">
+                <AirVent />
+              </Tooltip>
+              <Tooltip content="Device Charging">
+                <Plug />
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div className="flex items-center pr-3">
@@ -64,7 +75,8 @@ function RoomCalendarItem({
         className="p-1 cursor-pointer"
         onPress={() => onPress(room)}
       >
-        Host: {room.host} | {room.start} - {room.end}
+        <div>Host: {room.host}</div>
+        <div>{room.start} - {room.end}</div>
       </Card>
     </div>
   );
