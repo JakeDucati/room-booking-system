@@ -76,7 +76,9 @@ function RoomCalendarItem({
         onPress={() => onPress(room)}
       >
         <div>Host: {room.host}</div>
-        <div>{room.start} - {room.end}</div>
+        <div>
+          {room.start} - {room.end}
+        </div>
       </Card>
     </div>
   );

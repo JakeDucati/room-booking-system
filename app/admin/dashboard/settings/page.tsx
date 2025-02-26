@@ -1,7 +1,10 @@
+import AdminDashboardHeader from "@/components/adminDashboardHeader";
+
 export default function AdminDashboardSettings() {
-    return (
-        <>
-            Settings
-        </>
-    );
+  return (
+    <>
+      <AdminDashboardHeader text="Settings" />
+      <div />
+    </>
+  );
 }

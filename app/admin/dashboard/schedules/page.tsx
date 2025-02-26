@@ -1,7 +1,10 @@
+import AdminDashboardHeader from "@/components/adminDashboardHeader";
+
 export default function AdminDashboardSchedules() {
-    return (
-        <>
-            Schedules
-        </>
-    );
+  return (
+    <>
+      <AdminDashboardHeader text="Schedules" />
+      <div />
+    </>
+  );
 }
