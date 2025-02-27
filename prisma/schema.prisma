@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id          Int     @id @default(autoincrement()) // unique ID for each room
+  name        String
+  number      Int     @unique // room number
+  capacity    Int
+  features    String? // json string or comma-separated values
+  bookings    Booking[]
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement()) // unique booking ID
+  room      Room     @relation(fields: [roomId], references: [id]) // relation to Room
+  roomId    Int
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime @default(now()) // timestamp for when the booking was created
+}

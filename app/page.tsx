@@ -25,7 +25,7 @@ interface Room {
   start: string;
   end: string;
   host: string;
-  type: string;
+  name: string;
   capacity: number;
 }
 
@@ -41,7 +41,7 @@ function RoomCalendarItem({
       <div className="w-64 border-r mr-1 flex justify-between sticky left-0">
         <div>
           <div className="text-xl">
-            {room.type} {room.roomNumber}
+            {room.name} {room.roomNumber}
           </div>
           <div className="text-sm -mt-1 flex items-center gap-2">
             Capacity: {room.capacity}{" "}
@@ -129,7 +129,7 @@ export default function Home() {
                 {selectedRoom && (
                   <>
                     <p>
-                      <strong>Type:</strong> {selectedRoom.type}
+                      <strong>Type:</strong> {selectedRoom.name}
                     </p>
                     <p>
                       <strong>Host:</strong> {selectedRoom.host}
@@ -163,7 +163,7 @@ export default function Home() {
           <div className="text-4xl">Room Booking</div>
         </div>
       </section>
-      <section className="overflow-x-scroll">
+      <section className="overflow-x-scroll h-full">
         <div className="flex gap-32 pl-64 border-t">
           <div>12:00</div>
           <div>1:00</div>
