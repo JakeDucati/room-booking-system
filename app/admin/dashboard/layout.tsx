@@ -123,7 +123,7 @@ export default function AdminDashboardLayout({
           </Tooltip>
         </div>
       </nav>
-      <div className="p-6 w-full overflow-y-auto">{children}</div>
+      <div className="p-6 w-full max-h-[calc(100vh-49px)]">{children}</div>
     </div>
   );
 }

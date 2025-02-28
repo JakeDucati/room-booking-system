@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
 
-export default function RoomModal({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange: () => void }) {
+export default function EditRoom({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange: () => void }) {
     const [name, setName] = useState("");
     const [roomNumber, setRoomNumber] = useState("");
     const [capacity, setCapacity] = useState("");
