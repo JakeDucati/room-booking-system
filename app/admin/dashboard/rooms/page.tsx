@@ -3,16 +3,45 @@
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, Image, ScrollShadow } from "@nextui-org/react";
-import { AirVent, Pencil, Plug, Plus, Projector, Trash2, Video } from "lucide-react";
-
-import AdminDashboardHeader from "@/components/adminDashboardHeader";
-import RoomModal from "@/components/addRoom";
+import {
+  AirVent,
+  Pencil,
+  Plug,
+  Plus,
+  Projector,
+  Trash2,
+  User,
+  Video,
+} from "lucide-react";
 import { useDisclosure } from "@nextui-org/react";
+
+import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
+import RoomModal from "@/app/admin/dashboard/components/addRoom";
 
 export default function AdminDashboardRooms() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [rooms, setRooms] = useState<{ id: number; name: string; number: number; capacity: number }[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<{ id: number; name: string; number: number; capacity: number; notes: string; features: string } | null>(null);
+  const [rooms, setRooms] = useState<
+    { id: number; name: string; number: number; capacity: number }[]
+  >([]);
+  const [selectedRoom, setSelectedRoom] = useState<{
+    id: number;
+    name: string;
+    number: number;
+    capacity: number;
+    notes: string;
+    features: string;
+  } | null>(null);
+
+  const featureIcons = {
+    av_equipment: { icon: <Projector />, label: "A/V Equipment" },
+    video_conferencing: { icon: <Video />, label: "Video Conferencing" },
+    climate_controls: { icon: <AirVent />, label: "Climate Controls" },
+    device_charging: { icon: <Plug />, label: "Device Charging" },
+  };
+
+  const features = selectedRoom?.features
+    ? selectedRoom.features.split(",")
+    : [];
 
   // fetch rooms from api
   useEffect(() => {
@@ -43,14 +72,18 @@ export default function AdminDashboardRooms() {
               key={room.id}
               isHoverable
               isPressable
-              className={`p-3 min-h-[72px] ${selectedRoom?.id === room.id ? "border border-blue-500" : ""}`}
+              className={`p-3 min-h-[76px] ${selectedRoom?.id === room.id ? "border border-blue-500" : ""}`}
               // @ts-ignore
               onPress={() => setSelectedRoom(room)}
             >
               <div className="flex justify-between w-full">
-                <div className="flex flex-col items-baseline">
-                  <div className="font-semibold">{room.name} {room.number}</div>
-                  <div>Capacity: {room.capacity}</div>
+                <div className="flex flex-col items-baseline gap-1">
+                  <div className="font-semibold">
+                    {room.number} {room.name}
+                  </div>
+                  <div className="flex items-center">
+                    <User /> {room.capacity}
+                  </div>
                 </div>
                 <div className="flex gap-4 items-center">
                   <div className="text-success">Available</div>
@@ -72,45 +105,43 @@ export default function AdminDashboardRooms() {
                     <div>{selectedRoom.number}</div>
                   </div>
                   <div>Capacity: {selectedRoom.capacity}</div>
-                  {
-                    selectedRoom.notes && (
-                      <div>
-                        <div className="font-bold">Notes</div>
-                        <div>{selectedRoom.notes}</div>
-                      </div>
-                    )
-                  }
+                  {selectedRoom.notes && (
+                    <div>
+                      <div className="font-bold">Notes</div>
+                      <div>{selectedRoom.notes}</div>
+                    </div>
+                  )}
                   <div>
                     <div className="font-bold">Features</div>
-                    {selectedRoom.features}
                     <div>
-                      {selectedRoom.features == "av_equipment" && (<div className="flex gap-2"><Projector /> A/V Equipment</div>)}
-                      {selectedRoom.features == "video_conferencing" && (<div className="flex gap-2"><Video /> Video Conferencing</div>)}
-                      {selectedRoom.features == "climate_controls" && (<div className="flex gap-2"><AirVent /> Climate Controls</div>)}
-                      {selectedRoom.features == "device_charging" && (<div className="flex gap-2"><Plug /> Device Charging</div>)}
+                      {features.map((feature) => {
+                        // @ts-ignore
+                        const featureData = featureIcons[feature.trim()];
+
+                        return featureData ? (
+                          <div key={feature} className="flex gap-2">
+                            {featureData.icon} {featureData.label}
+                          </div>
+                        ) : null;
+                      })}
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <div>ID: {selectedRoom.id}</div>
-                  <Button
-                    variant="ghost"
-                    fullWidth
-                  >
+                  <Button fullWidth variant="ghost">
                     <Pencil /> Edit Room Details
                   </Button>
-                  <Button
-                    color="danger"
-                    variant="flat"
-                    fullWidth
-                  >
+                  <Button fullWidth color="danger" variant="flat">
                     <Trash2 /> Delete Room
                   </Button>
                 </div>
               </div>
             </>
           ) : (
-            <div className="text-center mt-10 text-default-400">Select a room</div>
+            <div className="text-center mt-10 text-default-400">
+              Select a room
+            </div>
           )}
         </div>
       </div>

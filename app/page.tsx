@@ -13,7 +13,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import { AirVent, Plug, Plus, Projector, Video } from "lucide-react";
+import { AirVent, Plug, Plus, Projector, Video, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -38,13 +38,16 @@ function RoomCalendarItem({
 }) {
   return (
     <div className="flex h-16 border-y p-1">
-      <div className="w-64 border-r mr-1 flex justify-between sticky left-0">
-        <div>
+      <div className="w-64 border-r mr-1 flex justify-between sticky left-0 gap-2">
+        <div className="w-full">
           <div className="text-xl">
             {room.name} {room.roomNumber}
           </div>
-          <div className="text-sm -mt-1 flex items-center gap-2">
-            Capacity: {room.capacity}{" "}
+          <div className="text-sm -mt-1 flex items-center gap-2 justify-between">
+            {/* issue!! ---------------------------------------------------------------------------------------------------- */}
+            <Tooltip className="flex items-center" content="Capacity">
+              <User /> {room.capacity}
+            </Tooltip>
             <div className="flex items-center gap-1">
               <Tooltip content="A/V Equipment">
                 <Projector />

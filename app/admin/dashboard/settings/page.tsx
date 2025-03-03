@@ -1,34 +1,28 @@
-import AdminDashboardHeader from "@/components/adminDashboardHeader";
 import { Button } from "@nextui-org/button";
-import { Divider } from "@nextui-org/react";
 import { Plus } from "lucide-react";
+
+import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 
 export default function AdminDashboardSettings() {
   return (
     <>
-      <AdminDashboardHeader text="Settings" children={undefined} />
+      <AdminDashboardHeader children={undefined} text="Settings" />
       <div className="flex flex-col">
         <div className="flex gap-4">
           <div className="w-1/2">
             <div className="flex items-center justify-between">
               <div className="text-xl font-bold">General</div>
             </div>
-            <div>
-              options
-            </div>
+            <div>options</div>
           </div>
           <div className="w-1/2">
             <div className="flex items-center justify-between">
               <div className="text-xl font-bold">API Keys</div>
-              <Button
-
-              >
+              <Button>
                 <Plus /> New Key
               </Button>
             </div>
-            <div>
-              options
-            </div>
+            <div>options</div>
           </div>
         </div>
       </div>

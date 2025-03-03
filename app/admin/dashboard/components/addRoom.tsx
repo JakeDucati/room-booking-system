@@ -13,15 +13,22 @@ import {
     CheckboxGroup,
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
+import { getApiKey } from "@/utils/apiKeys";
 
-export default function EditRoom({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange: () => void }) {
+export default function RoomModal({
+    isOpen,
+    onOpenChange,
+}: {
+    isOpen: boolean;
+    onOpenChange: () => void;
+}) {
     const [name, setName] = useState("");
     const [roomNumber, setRoomNumber] = useState("");
     const [capacity, setCapacity] = useState("");
     const [notes, setNotes] = useState("");
-    const [features, setFeatures] = useState<string[]>([]);
+    const [features, setFeatures] = useState<string[]>([])
 
-    const key = process.env.NEXT_PUBLIC_API_KEY_ADMIN;
+    const key = getApiKey("admin");
 
     const handleAddRoom = async () => {
         try {
@@ -46,6 +53,7 @@ export default function EditRoom({ isOpen, onOpenChange }: { isOpen: boolean; on
             }
 
             const newRoom = await response.json();
+
             console.log("Room created:", newRoom);
 
             // reset feilds
@@ -66,8 +74,8 @@ export default function EditRoom({ isOpen, onOpenChange }: { isOpen: boolean; on
             closeButton={false}
             isDismissable={false}
             isOpen={isOpen}
-            onOpenChange={onOpenChange}
             size="xl"
+            onOpenChange={onOpenChange}
         >
             <ModalContent>
                 {(onClose) => (
@@ -77,34 +85,40 @@ export default function EditRoom({ isOpen, onOpenChange }: { isOpen: boolean; on
                             <div>General Info</div>
                             <div className="flex gap-2">
                                 <Input
+                                    isRequired
                                     label="Name"
                                     placeholder="eg. Conference, Classroom, Theater, etc."
-                                    isRequired
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 />
                                 <Input
+                                    isRequired
                                     className="w-36"
                                     label="Room #"
-                                    isRequired
                                     value={roomNumber}
                                     onChange={(e) => setRoomNumber(e.target.value)}
                                 />
                             </div>
                             <div className="flex gap-2">
                                 <Input
+                                    isRequired
                                     className="w-36"
                                     label="Capacity"
-                                    isRequired
                                     value={capacity}
                                     onChange={(e) => setCapacity(e.target.value)}
                                 />
-                                <Input label="Additional Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+                                <Input
+                                    label="Notes"
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                />
                             </div>
                             <div>Features</div>
                             <CheckboxGroup value={features} onValueChange={setFeatures}>
                                 <Checkbox value="av_equipment">A/V Equipment</Checkbox>
-                                <Checkbox value="video_conferencing">Video Conferencing</Checkbox>
+                                <Checkbox value="video_conferencing">
+                                    Video Conferencing
+                                </Checkbox>
                                 <Checkbox value="climate_controls">Climate Controls</Checkbox>
                                 <Checkbox value="device_charging">Device Charging</Checkbox>
                             </CheckboxGroup>

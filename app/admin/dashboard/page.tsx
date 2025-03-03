@@ -1,6 +1,6 @@
 "use client";
 
-import AdminDashboardHeader from "@/components/adminDashboardHeader";
+import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 
 export default function AdminDashboard() {
   return (
