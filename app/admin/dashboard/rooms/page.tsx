@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
-import { Card, Image, ScrollShadow } from "@nextui-org/react";
+import { Card, Image, ScrollShadow, Tooltip } from "@nextui-org/react";
 import {
   AirVent,
   Pencil,
@@ -104,7 +104,11 @@ export default function AdminDashboardRooms() {
                     <div>{selectedRoom.name}</div>
                     <div>{selectedRoom.number}</div>
                   </div>
-                  <div>Capacity: {selectedRoom.capacity}</div>
+                  <Tooltip content="Capacity">
+                    <div className="flex max-w-min">
+                      <User /> {selectedRoom.capacity}
+                    </div>
+                  </Tooltip>
                   {selectedRoom.notes && (
                     <div>
                       <div className="font-bold">Notes</div>

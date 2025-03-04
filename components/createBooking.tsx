@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Calendar,
   Input,
   Modal,
   ModalBody,
@@ -10,6 +11,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
+import { today, getLocalTimeZone } from "@internationalized/date";
 
 export default function CreateBooking() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -26,6 +28,10 @@ export default function CreateBooking() {
               <div>
                 <div>Room</div>
                 <Input type="number" />
+                <Calendar
+                  defaultValue={today(getLocalTimeZone())}
+                  minValue={today(getLocalTimeZone())}
+                />
               </div>
             </ModalBody>
             <ModalFooter>
