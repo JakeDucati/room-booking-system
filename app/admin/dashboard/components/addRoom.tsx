@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@nextui-org/button";
 import {
     Modal,
@@ -26,20 +26,38 @@ export default function RoomModal({
     const [roomNumber, setRoomNumber] = useState("");
     const [capacity, setCapacity] = useState("");
     const [notes, setNotes] = useState("");
-    const [features, setFeatures] = useState<string[]>([])
+    const [features, setFeatures] = useState<string[]>([]);
+    const [apiKey, setApiKey] = useState<string | null>(null);
 
-    const key = getApiKey("admin");
+    // Fetch API Key when component mounts
+    useEffect(() => {
+        const fetchKey = async () => {
+            const key = await getApiKey("admin");
+            console.log("API Key fetched:", key); // Debug log
+            setApiKey(key);
+        };
+
+        fetchKey();
+    }, []); // Runs only once when the component mounts
 
     const handleAddRoom = async () => {
+        if (!apiKey) {
+            console.error("API Key not available!");
+            toast("API Key not available");
+            return;
+        }
+
         try {
-            // call api to add room to db
+            const key = await getApiKey("admin");
+            console.log("API Key being sent:", key);
+
             const response = await fetch("/api/addRoom", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    key,
+                    key: apiKey, // Now sending the actual API key
                     name,
                     roomNumber,
                     capacity,
@@ -48,15 +66,14 @@ export default function RoomModal({
                 }),
             });
 
+            const data = await response.json();
+            console.log("Server response:", data);
+
             if (!response.ok) {
                 toast("Failed to create room");
+                return;
             }
 
-            const newRoom = await response.json();
-
-            console.log("Room created:", newRoom);
-
-            // reset feilds
             setName("");
             setRoomNumber("");
             setCapacity("");

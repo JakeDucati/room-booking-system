@@ -1,10 +1,10 @@
 "use client";
 
 import { Button, Card, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
-
-import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 import { Plus, User } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 
 export default function AdminDashboardSchedules() {
   const [rooms, setRooms] = useState<

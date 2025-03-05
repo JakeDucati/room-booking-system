@@ -20,9 +20,7 @@ import RoomModal from "@/app/admin/dashboard/components/addRoom";
 
 export default function AdminDashboardRooms() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [rooms, setRooms] = useState<
-    { id: number; name: string; number: number; capacity: number }[]
-  >([]);
+  const [rooms, setRooms] = useState<{ id: number; name: string; number: number; capacity: number }[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<{
     id: number;
     name: string;
@@ -51,7 +49,7 @@ export default function AdminDashboardRooms() {
         setRooms(data);
       })
       .catch((err) => console.error("Failed to fetch rooms:", err));
-  }, []);
+  }, [onOpenChange]);
 
   return (
     <>
@@ -59,9 +57,18 @@ export default function AdminDashboardRooms() {
       <RoomModal isOpen={isOpen} onOpenChange={onOpenChange} />
 
       <AdminDashboardHeader text="Rooms">
-        <Button onPress={onOpen}>
-          <Plus /> <span>Add Room</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {
+            selectedRoom && (
+              <Button onPress={() => { setSelectedRoom(null) }} variant="ghost">
+                Deselect
+              </Button>
+            )
+          }
+          <Button onPress={onOpen}>
+            <Plus /> Add Room
+          </Button>
+        </div>
       </AdminDashboardHeader>
 
       {/* room List */}
@@ -134,7 +141,7 @@ export default function AdminDashboardRooms() {
                 <div className="flex flex-col gap-2">
                   <div>ID: {selectedRoom.id}</div>
                   <Button fullWidth variant="ghost">
-                    <Pencil /> Edit Room Details
+                    <Pencil /> Edit Details
                   </Button>
                   <Button fullWidth color="danger" variant="flat">
                     <Trash2 /> Delete Room

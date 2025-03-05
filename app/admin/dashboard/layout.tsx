@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ThemeSwitch } from "@/components/theme-switch";
+import { getApiKey } from "@/utils/apiKeys";
 
 export default function AdminDashboardLayout({
   children,
