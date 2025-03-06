@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Input,
-  Spinner,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Input, Spinner, useDisclosure } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 

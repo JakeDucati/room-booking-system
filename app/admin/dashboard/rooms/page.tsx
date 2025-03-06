@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/button";
 import { Card, Image, ScrollShadow, Tooltip } from "@nextui-org/react";
 import {
   AirVent,
+  Calendar,
   Pencil,
   Plug,
   Plus,
@@ -14,13 +15,16 @@ import {
   Video,
 } from "lucide-react";
 import { useDisclosure } from "@nextui-org/react";
+import Link from "next/link";
 
 import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 import RoomModal from "@/app/admin/dashboard/components/addRoom";
 
 export default function AdminDashboardRooms() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [rooms, setRooms] = useState<{ id: number; name: string; number: number; capacity: number }[]>([]);
+  const [rooms, setRooms] = useState<
+    { id: number; name: string; number: number; capacity: number }[]
+  >([]);
   const [selectedRoom, setSelectedRoom] = useState<{
     id: number;
     name: string;
@@ -58,13 +62,16 @@ export default function AdminDashboardRooms() {
 
       <AdminDashboardHeader text="Rooms">
         <div className="flex items-center gap-2">
-          {
-            selectedRoom && (
-              <Button onPress={() => { setSelectedRoom(null) }} variant="ghost">
-                Deselect
-              </Button>
-            )
-          }
+          {selectedRoom && (
+            <Button
+              variant="ghost"
+              onPress={() => {
+                setSelectedRoom(null);
+              }}
+            >
+              Deselect
+            </Button>
+          )}
           <Button onPress={onOpen}>
             <Plus /> Add Room
           </Button>
@@ -140,6 +147,14 @@ export default function AdminDashboardRooms() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <div>ID: {selectedRoom.id}</div>
+                  <Button
+                    fullWidth
+                    as={Link}
+                    href="/admin/dashboard/schedules"
+                    variant="ghost"
+                  >
+                    <Calendar /> Schedules
+                  </Button>
                   <Button fullWidth variant="ghost">
                     <Pencil /> Edit Details
                   </Button>
