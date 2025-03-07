@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+
 import { validateApiKey } from "@/lib/apiKeys";
 
 const prisma = new PrismaClient();
@@ -9,8 +10,7 @@ export async function POST(req: Request) {
     const { key, name, roomNumber, capacity, features, notes } =
       await req.json();
 
-    // if (validateApiKey(key)) {
-    if (true) {
+    if (validateApiKey(key)) {
       const newRoom = await prisma.room.create({
         data: {
           name,

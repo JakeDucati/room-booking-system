@@ -14,7 +14,7 @@ model Room {
   capacity    Int
   features    String? // json string or comma-separated values
   notes       String? // optional notes
-  image       String? // optional image of room
+  image       String?
   bookings    Booking[]
 }
 

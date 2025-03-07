@@ -4,7 +4,9 @@ CREATE TABLE "Room" (
     "name" TEXT NOT NULL,
     "number" INTEGER NOT NULL,
     "capacity" INTEGER NOT NULL,
-    "features" TEXT
+    "features" TEXT,
+    "notes" TEXT,
+    "image" TEXT
 );
 
 -- CreateTable

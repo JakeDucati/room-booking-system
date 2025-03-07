@@ -6,7 +6,9 @@ import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboar
 export default function AdminDashboardSettings() {
   return (
     <>
-      <AdminDashboardHeader children={undefined} text="Settings" />
+      <AdminDashboardHeader text="Settings">
+        <></>
+      </AdminDashboardHeader>
       <div className="flex flex-col">
         <div className="flex gap-4">
           <div className="w-1/2">
@@ -22,7 +24,7 @@ export default function AdminDashboardSettings() {
                 <Plus /> New Key
               </Button>
             </div>
-            <div>options</div>
+            <div>{/* map all keys here */}</div>
           </div>
         </div>
       </div>

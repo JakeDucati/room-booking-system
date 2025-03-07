@@ -34,7 +34,6 @@ export default function RoomModal({
     const fetchKey = async () => {
       const key = await getApiKey("admin");
 
-      console.log("API Key fetched:", key);
       setApiKey(key);
     };
 
@@ -43,17 +42,12 @@ export default function RoomModal({
 
   const handleAddRoom = async () => {
     if (!apiKey) {
-      console.error("API Key not available!");
       toast("API Key not available");
 
       return;
     }
 
     try {
-    //   const key = await getApiKey("admin");
-
-      console.log("API Key being sent:", apiKey);
-
       const response = await fetch("/api/addRoom", {
         method: "POST",
         headers: {
@@ -71,8 +65,6 @@ export default function RoomModal({
 
       const data = await response.json();
 
-      console.log("Server response:", data);
-
       if (!response.ok) {
         toast("Failed to create room");
 
@@ -87,7 +79,7 @@ export default function RoomModal({
 
       onOpenChange();
     } catch (error) {
-      console.error("Error adding room:", error);
+      toast("Error creating room");
     }
   };
 
