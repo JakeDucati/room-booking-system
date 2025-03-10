@@ -16,6 +16,13 @@ export async function POST(req: any) {
       return NextResponse.json({ error: "Invalid API Key!" }, { status: 403 });
     }
 
+    if (!keyName || keyName.trim() === "") {
+      return NextResponse.json(
+        { error: "Key name is required!" },
+        { status: 400 },
+      );
+    }
+
     const newApiKey = crypto.randomBytes(64).toString("hex");
     const data = await fs.readFile(API_KEYS_PATH, "utf-8");
     const apiKeys = JSON.parse(data);
