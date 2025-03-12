@@ -33,12 +33,31 @@ export default function ViewApiKeyModal({
     }
   }
 
+  async function handleDeleteKey() {
+    try {
+      const response = await fetch("/api/apiKeys/removeKey", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key: apiKey, keyName }),
+      });
+
+      if (!response.ok) {
+        toast("Failed to remove API key");
+
+        return;
+      }
+
+      toast(`Removed API Key ${keyName}`);
+      onOpenChange();
+    } catch (err) {
+      toast("Error removing API key");
+    }
+  }
+
   return (
-    <Modal
-      isOpen={isOpen}
-      size="xl"
-      onOpenChange={onOpenChange}
-    >
+    <Modal isOpen={isOpen} size="xl" onOpenChange={onOpenChange}>
       <ModalContent>
         {(onClose) => (
           <>
@@ -55,7 +74,7 @@ export default function ViewApiKeyModal({
               </div>
             </ModalBody>
             <ModalFooter className="flex justify-between">
-              <Button color="danger" variant="flat" onPress={onClose}>
+              <Button color="danger" variant="flat" onPress={handleDeleteKey}>
                 <Trash2 /> Delete
               </Button>
               <Button variant="flat" onPress={onClose}>

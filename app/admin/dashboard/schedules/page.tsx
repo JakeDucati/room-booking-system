@@ -37,9 +37,15 @@ export default function AdminDashboardSchedules() {
       </AdminDashboardHeader>
       <Tabs fullWidth>
         <Tab key="schedules" title="All Schedules">
+          <div>
+            <Button>Clear All Schedules</Button>
+          </div>
           schedule data in calendar form
         </Tab>
         <Tab key="rooms" title="Room Schedules">
+          <div>
+            <Button>Clear Room Schedules</Button>
+          </div>
           <ScrollShadow className="w-full flex flex-col gap-4 p-2">
             {rooms.map((room) => (
               <Card

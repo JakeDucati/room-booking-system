@@ -1,26 +1,39 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import { Copy, Plus } from "lucide-react";
-import { Card, Divider, Input, Tooltip, useDisclosure } from "@nextui-org/react";
+import { Copy, HelpCircle, Plus } from "lucide-react";
+import {
+  Card,
+  Divider,
+  Input,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import AddApiKeyModal from "../components/addApiKey";
 import ViewApiKeyModal from "../components/viewApiKey";
+
 import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
-import { useEffect, useState } from "react";
 import { getApiKey } from "@/lib/apiKeys";
-import { toast } from "react-toastify";
 
 export default function AdminDashboardSettings() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const viewDisclosure = useDisclosure();
-  const [apiKeys, setApiKeys] = useState<{ keyName: string; apiKey: string }[]>([]);
-  const [selectedApiKey, setSelectedApiKey] = useState<{ keyName: string; apiKey: string } | null>(null);
+  const [apiKeys, setApiKeys] = useState<{ keyName: string; apiKey: string }[]>(
+    [],
+  );
+  const [selectedApiKey, setSelectedApiKey] = useState<{
+    keyName: string;
+    apiKey: string;
+  } | null>(null);
   const [adminKey, setAdminKey] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAdminKey = async () => {
       const key = await getApiKey("admin");
+
       setAdminKey(key);
 
       if (key) {
@@ -43,15 +56,15 @@ export default function AdminDashboardSettings() {
         if (response.ok) {
           setApiKeys(data.keys);
         } else {
-          console.error("Error:", data.error);
+          toast("Error");
         }
       } catch (error) {
-        console.error("Failed to fetch API keys:", error);
+        toast("Failed to get API Keys");
       }
     };
 
     fetchAdminKey();
-  }, []);
+  }, [onOpenChange]);
 
   async function copyKey(key: string) {
     try {
@@ -67,14 +80,27 @@ export default function AdminDashboardSettings() {
     viewDisclosure.onOpen();
   };
 
-  const OptionsItem = ({ label, children }: { label: string; children: React.ReactNode }) => {
+  const OptionsItem = ({
+    label,
+    children,
+    tooltip,
+  }: {
+    label: string;
+    children: React.ReactNode;
+    tooltip: string;
+  }) => {
     return (
       <div className="flex justify-between items-center">
-        <div>{label}</div>
+        <div className="flex gap-2">
+          {label}{" "}
+          <Tooltip className="max-w-64" content={tooltip} placement="right">
+            <HelpCircle />
+          </Tooltip>
+        </div>
         {children}
       </div>
     );
-  }
+  };
 
   return (
     <>
@@ -84,10 +110,10 @@ export default function AdminDashboardSettings() {
       <AddApiKeyModal isOpen={isOpen} onOpenChange={onOpenChange} />
       {selectedApiKey && (
         <ViewApiKeyModal
-          isOpen={viewDisclosure.isOpen}
-          onOpenChange={viewDisclosure.onOpenChange}
           apiKey={selectedApiKey.apiKey}
+          isOpen={viewDisclosure.isOpen}
           keyName={selectedApiKey.keyName}
+          onOpenChange={viewDisclosure.onOpenChange}
         />
       )}
       <div className="flex flex-col">
@@ -97,15 +123,18 @@ export default function AdminDashboardSettings() {
               <div className="text-xl font-bold">General</div>
             </div>
             <div className="flex flex-col gap-4">
-              <OptionsItem label="Pending Room Timeout">
-                <Input
-                  className="w-24"
-                  label="Minutes"
-                />
+              <OptionsItem
+                label="Pending Room Timeout"
+                tooltip="Time until room is released from its schedule when in a pending state (no-show)."
+              >
+                <Input className="w-36" label="Minutes" type="number" />
               </OptionsItem>
             </div>
           </div>
-          <Divider orientation="vertical" className="min-h-[calc(100vh-100px)]" />
+          <Divider
+            className="min-h-[calc(100vh-100px)]"
+            orientation="vertical"
+          />
           <div className="w-1/2">
             <div className="flex items-center justify-between">
               <div className="text-xl font-bold">API Keys</div>
@@ -119,12 +148,16 @@ export default function AdminDashboardSettings() {
                   key={keyName}
                   isHoverable
                   isPressable
-                  onPress={() => handleOpenViewModal(keyName, apiKey)} // Open modal on card click
+                  onPress={() => handleOpenViewModal(keyName, apiKey)}
                 >
                   <div className="flex justify-between items-center p-4 w-full">
                     <div>{keyName}</div>
                     <Tooltip content="Copy Key">
-                      <Button isIconOnly variant="flat" onPress={() => copyKey(apiKey)}>
+                      <Button
+                        isIconOnly
+                        variant="flat"
+                        onPress={() => copyKey(apiKey)}
+                      >
                         <Copy />
                       </Button>
                     </Tooltip>

@@ -45,7 +45,7 @@ export default function AddApiKeyModal({
     try {
       await navigator.clipboard.writeText(generatedKey);
       toast("API Key copied to clipboard!");
-    } catch (err) {
+    } catch (error) {
       toast("Failed to copy API key");
     }
   };
@@ -68,8 +68,6 @@ export default function AddApiKeyModal({
           keyName,
         }),
       });
-
-      const data = await response.json();
 
       if (!response.ok) {
         toast("Failed to add API key");

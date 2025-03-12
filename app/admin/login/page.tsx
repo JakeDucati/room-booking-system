@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card, Input } from "@nextui-org/react";
+import Link from "next/link";
 
 export default function Login() {
   const [password, setPassword] = useState("");
@@ -35,6 +36,15 @@ export default function Login() {
         </Button>
       </form>
       {error && <p style={{ color: "red" }}>Incorrect password</p>}
+      <div className="mt-4">
+        <p>
+          In the wrong place? Return to the{" "}
+          <Link className="text-secondary" href={"/"}>
+            scheduler
+          </Link>
+          .
+        </p>
+      </div>
     </Card>
   );
 }

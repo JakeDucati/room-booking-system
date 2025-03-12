@@ -29,6 +29,7 @@
 		"fs": "^0.0.1-security",
 		"intl-messageformat": "^10.5.0",
 		"lucide-react": "^0.460.0",
+		"mime": "^4.0.6",
 		"moment": "^2.30.1",
 		"next": "14.2.4",
 		"next-themes": "^0.2.1",

@@ -23,7 +23,13 @@ import RoomModal from "@/app/admin/dashboard/components/addRoom";
 export default function AdminDashboardRooms() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [rooms, setRooms] = useState<
-    { id: number; name: string; number: number; capacity: number }[]
+    {
+      id: number;
+      name: string;
+      number: number;
+      capacity: number;
+      image: string;
+    }[]
   >([]);
   const [selectedRoom, setSelectedRoom] = useState<{
     id: number;
@@ -32,6 +38,7 @@ export default function AdminDashboardRooms() {
     capacity: number;
     notes: string;
     features: string;
+    image: string;
   } | null>(null);
 
   const featureIcons = {
@@ -111,14 +118,23 @@ export default function AdminDashboardRooms() {
         <div className="border-l w-1/3 min-w-96 pl-4 max-h-[calc(100vh-100px)] flex flex-col gap-2">
           {selectedRoom ? (
             <>
-              <Image isBlurred isZoomed src="/default_room.jpg" />
+              <div>
+                <Image
+                  isBlurred
+                  isZoomed
+                  src={selectedRoom.image || "/default_room.jpg"}
+                />
+                <div className="absolute text-xs -mt-1">
+                  {!selectedRoom.image && "Default Image"}
+                </div>
+              </div>
               <div className="flex flex-col justify-between h-full">
                 <div className="flex flex-col gap-2">
                   <div className="text-2xl flex justify-between">
                     <div>{selectedRoom.name}</div>
                     <div>{selectedRoom.number}</div>
                   </div>
-                  <Tooltip content="Capacity">
+                  <Tooltip content="Capacity" placement="right">
                     <div className="flex max-w-min">
                       <User /> {selectedRoom.capacity}
                     </div>

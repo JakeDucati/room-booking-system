@@ -28,6 +28,7 @@ export default function RoomModal({
   const [capacity, setCapacity] = useState("");
   const [notes, setNotes] = useState("");
   const [features, setFeatures] = useState<string[]>([]);
+  const [image, setImage] = useState<File | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,20 +48,22 @@ export default function RoomModal({
       return;
     }
 
+    const formData = new FormData();
+
+    formData.append("key", apiKey);
+    formData.append("name", name);
+    formData.append("roomNumber", roomNumber);
+    formData.append("capacity", capacity);
+    formData.append("features", JSON.stringify(features));
+    formData.append("notes", notes);
+    if (image) {
+      formData.append("image", image);
+    }
+
     try {
       const response = await fetch("/api/addRoom", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          key: apiKey,
-          name,
-          roomNumber,
-          capacity,
-          features,
-          notes,
-        }),
+        body: formData,
       });
 
       const data = await response.json();
@@ -71,11 +74,14 @@ export default function RoomModal({
         return;
       }
 
+      toast(`Created New Room: ${roomNumber}`);
+
       setName("");
       setRoomNumber("");
       setCapacity("");
       setNotes("");
       setFeatures([]);
+      setImage(null);
 
       onOpenChange();
     } catch (error) {
@@ -101,7 +107,7 @@ export default function RoomModal({
                 <Input
                   isRequired
                   label="Name"
-                  placeholder="eg. Conference, Classroom, Theater, etc."
+                  placeholder="e.g., Conference, Classroom"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -125,6 +131,14 @@ export default function RoomModal({
                   label="Notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  accept="image/png, image/jpeg, image/gif, image/webp"
+                  label="Image"
+                  type="file"
+                  onChange={(e) => setImage(e.target.files?.[0] || null)}
                 />
               </div>
               <div>Features</div>

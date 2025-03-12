@@ -53,7 +53,7 @@ export default function EditRoom({
 
       const newRoom = await response.json();
 
-      console.log("Room created:", newRoom);
+      toast(`Created New Room: ${roomNumber}`);
 
       // reset feilds
       setName("");
@@ -64,7 +64,7 @@ export default function EditRoom({
 
       onOpenChange();
     } catch (error) {
-      console.error("Error adding room:", error);
+      toast("Error adding room!");
     }
   };
 
