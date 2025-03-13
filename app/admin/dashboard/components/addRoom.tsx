@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 
 import { getApiKey } from "@/lib/apiKeys";
 
-export default function RoomModal({
+export default function AddRoomModal({
   isOpen,
   onOpenChange,
 }: {

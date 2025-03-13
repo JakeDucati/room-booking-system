@@ -18,7 +18,8 @@ import { useDisclosure } from "@nextui-org/react";
 import Link from "next/link";
 
 import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
-import RoomModal from "@/app/admin/dashboard/components/addRoom";
+import AddRoomModal from "@/app/admin/dashboard/components/addRoom";
+import EditRoomModal from "../components/editRoom";
 
 export default function AdminDashboardRooms() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -65,7 +66,8 @@ export default function AdminDashboardRooms() {
   return (
     <>
       {/* add room */}
-      <RoomModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      <AddRoomModal isOpen={isOpen} onOpenChange={onOpenChange} />
+      {/* <EditRoomModal isOpen={isOpen} onOpenChange={onOpenChange} room={null} /> */}
 
       <AdminDashboardHeader text="Rooms">
         <div className="flex items-center gap-2">
@@ -123,6 +125,7 @@ export default function AdminDashboardRooms() {
                   isBlurred
                   isZoomed
                   src={selectedRoom.image || "/default_room.jpg"}
+                  alt="photo of room"
                 />
                 <div className="absolute text-xs -mt-1">
                   {!selectedRoom.image && "Default Image"}
@@ -166,7 +169,7 @@ export default function AdminDashboardRooms() {
                   <Button
                     fullWidth
                     as={Link}
-                    href="/admin/dashboard/schedules"
+                    href={`/admin/dashboard/schedules?room=${selectedRoom.id}`}
                     variant="ghost"
                   >
                     <Calendar /> Schedules

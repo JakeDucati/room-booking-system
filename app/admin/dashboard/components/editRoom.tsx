@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@nextui-org/button";
 import {
   Modal,
@@ -14,121 +14,114 @@ import {
 } from "@nextui-org/react";
 import { toast } from "react-toastify";
 
-export default function EditRoom({
+import { getApiKey } from "@/lib/apiKeys";
+
+export default function EditRoomModal({
   isOpen,
   onOpenChange,
+  room,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
+  room: {
+    id: number;
+    name: string;
+    number: number;
+    capacity: number;
+    notes: string;
+    features: string;
+    image: string;
+  } | null;
 }) {
   const [name, setName] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
   const [capacity, setCapacity] = useState("");
   const [notes, setNotes] = useState("");
   const [features, setFeatures] = useState<string[]>([]);
+  const [image, setImage] = useState<File | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
-  const key = process.env.NEXT_PUBLIC_API_KEY_ADMIN;
+  useEffect(() => {
+    if (room) {
+      setName(room.name);
+      setRoomNumber(room.number.toString());
+      setCapacity(room.capacity.toString());
+      setNotes(room.notes || "");
+      setFeatures(room.features ? room.features.split(",") : []);
+    }
+  }, [room]);
 
-  const handleAddRoom = async () => {
+  useEffect(() => {
+    const fetchKey = async () => {
+      const key = await getApiKey("admin");
+      setApiKey(key);
+    };
+
+    fetchKey();
+  }, []);
+
+  const handleUpdateRoom = async () => {
+    if (!apiKey || !room) {
+      toast("API Key not available");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("key", apiKey);
+    formData.append("name", name);
+    formData.append("roomNumber", roomNumber);
+    formData.append("capacity", capacity);
+    formData.append("features", JSON.stringify(features));
+    formData.append("notes", notes);
+    if (image) {
+      formData.append("image", image);
+    }
+
     try {
-      // call api to add room to db
-      const response = await fetch("/api/addRoom", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          key,
-          name,
-          roomNumber,
-          capacity,
-          features,
-          notes,
-        }),
+      const response = await fetch(`/api/editRoom/${room.id}`, {
+        method: "PUT",
+        body: formData,
       });
 
       if (!response.ok) {
-        toast("Failed to create room");
+        toast("Failed to update room");
+        return;
       }
 
-      const newRoom = await response.json();
-
-      toast(`Created New Room: ${roomNumber}`);
-
-      // reset feilds
-      setName("");
-      setRoomNumber("");
-      setCapacity("");
-      setNotes("");
-      setFeatures([]);
-
+      toast("Room updated successfully");
       onOpenChange();
     } catch (error) {
-      toast("Error adding room!");
+      toast("Error updating room");
     }
   };
 
   return (
-    <Modal
-      closeButton={false}
-      isDismissable={false}
-      isOpen={isOpen}
-      size="xl"
-      onOpenChange={onOpenChange}
-    >
+    <Modal isOpen={isOpen} size="xl" onOpenChange={onOpenChange}>
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex gap-2">Add Room</ModalHeader>
+            <ModalHeader>Edit Room</ModalHeader>
             <ModalBody>
-              <div>General Info</div>
-              <div className="flex gap-2">
-                <Input
-                  isRequired
-                  label="Name"
-                  placeholder="eg. Conference, Classroom, Theater, etc."
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <Input
-                  isRequired
-                  className="w-36"
-                  label="Room #"
-                  value={roomNumber}
-                  onChange={(e) => setRoomNumber(e.target.value)}
-                />
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  isRequired
-                  className="w-36"
-                  label="Capacity"
-                  value={capacity}
-                  onChange={(e) => setCapacity(e.target.value)}
-                />
-                <Input
-                  label="Additional Notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                />
-              </div>
-              <div>Features</div>
+              <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input label="Room #" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} />
+              <Input label="Capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
+              <Input label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+              <Input
+                accept="image/png, image/jpeg, image/gif, image/webp"
+                label="Replace Image"
+                type="file"
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
+              />
               <CheckboxGroup value={features} onValueChange={setFeatures}>
                 <Checkbox value="av_equipment">A/V Equipment</Checkbox>
-                <Checkbox value="video_conferencing">
-                  Video Conferencing
-                </Checkbox>
+                <Checkbox value="video_conferencing">Video Conferencing</Checkbox>
                 <Checkbox value="climate_controls">Climate Controls</Checkbox>
                 <Checkbox value="device_charging">Device Charging</Checkbox>
               </CheckboxGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="flat" onPress={onClose}>
-                Cancel
-              </Button>
-              <Button color="primary" onPress={handleAddRoom}>
-                Add
-              </Button>
+              <Button color="danger" variant="flat" onPress={onClose}>Cancel</Button>
+              <Button color="primary" onPress={handleUpdateRoom}>Save Changes</Button>
             </ModalFooter>
           </>
         )}
