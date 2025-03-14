@@ -22,7 +22,9 @@ import AddRoomModal from "@/app/admin/dashboard/components/addRoom";
 import EditRoomModal from "../components/editRoom";
 
 export default function AdminDashboardRooms() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onOpenChange: onAddOpenChange } = useDisclosure();
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange } = useDisclosure();
+
   const [rooms, setRooms] = useState<
     {
       id: number;
@@ -61,13 +63,17 @@ export default function AdminDashboardRooms() {
         setRooms(data);
       })
       .catch((err) => console.error("Failed to fetch rooms:", err));
-  }, [onOpenChange]);
+  }, [onAddOpenChange, onEditOpenChange]);
+
+  useEffect(() => {
+    setSelectedRoom(selectedRoom);
+  }, [onEditOpenChange]);
 
   return (
     <>
       {/* add room */}
-      <AddRoomModal isOpen={isOpen} onOpenChange={onOpenChange} />
-      {/* <EditRoomModal isOpen={isOpen} onOpenChange={onOpenChange} room={null} /> */}
+      <AddRoomModal isOpen={isAddOpen} onOpenChange={onAddOpenChange} />
+      <EditRoomModal isOpen={isEditOpen} onOpenChange={onEditOpenChange} room={selectedRoom} />
 
       <AdminDashboardHeader text="Rooms">
         <div className="flex items-center gap-2">
@@ -81,7 +87,7 @@ export default function AdminDashboardRooms() {
               Deselect
             </Button>
           )}
-          <Button onPress={onOpen}>
+          <Button onPress={onAddOpen}>
             <Plus /> Add Room
           </Button>
         </div>
@@ -174,7 +180,7 @@ export default function AdminDashboardRooms() {
                   >
                     <Calendar /> Schedules
                   </Button>
-                  <Button fullWidth variant="ghost">
+                  <Button fullWidth variant="ghost" onPress={onEditOpen}>
                     <Pencil /> Edit Details
                   </Button>
                   <Button fullWidth color="danger" variant="flat">

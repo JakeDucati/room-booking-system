@@ -68,6 +68,7 @@ export default function EditRoomModal({
 
     const formData = new FormData();
     formData.append("key", apiKey);
+    formData.append("id", room.id.toString());
     formData.append("name", name);
     formData.append("roomNumber", roomNumber);
     formData.append("capacity", capacity);
@@ -78,8 +79,8 @@ export default function EditRoomModal({
     }
 
     try {
-      const response = await fetch(`/api/editRoom/${room.id}`, {
-        method: "PUT",
+      const response = await fetch(`/api/editRoom`, {
+        method: "POST",
         body: formData,
       });
 
@@ -96,32 +97,64 @@ export default function EditRoomModal({
   };
 
   return (
-    <Modal isOpen={isOpen} size="xl" onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} size="xl" onOpenChange={onOpenChange} isDismissable={false}>
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader>Edit Room</ModalHeader>
             <ModalBody>
-              <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} />
-              <Input label="Room #" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} />
-              <Input label="Capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
-              <Input label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
-              <Input
-                accept="image/png, image/jpeg, image/gif, image/webp"
-                label="Replace Image"
-                type="file"
-                onChange={(e) => setImage(e.target.files?.[0] || null)}
-              />
+              <div>General Info</div>
+              <div className="flex gap-2">
+                <Input
+                  isRequired
+                  label="Name"
+                  placeholder="e.g., Conference, Classroom"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <Input
+                  isRequired
+                  className="w-36"
+                  label="Room #"
+                  value={roomNumber}
+                  onChange={(e) => setRoomNumber(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  isRequired
+                  className="w-36"
+                  label="Capacity"
+                  value={capacity}
+                  onChange={(e) => setCapacity(e.target.value)}
+                />
+                <Input
+                  label="Notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Input
+                  accept="image/png, image/jpeg, image/gif, image/webp"
+                  label="Image"
+                  type="file"
+                  onChange={(e) => setImage(e.target.files?.[0] || null)}
+                />
+              </div>
+              <div>Features</div>
               <CheckboxGroup value={features} onValueChange={setFeatures}>
                 <Checkbox value="av_equipment">A/V Equipment</Checkbox>
-                <Checkbox value="video_conferencing">Video Conferencing</Checkbox>
+                <Checkbox value="video_conferencing">
+                  Video Conferencing
+                </Checkbox>
                 <Checkbox value="climate_controls">Climate Controls</Checkbox>
                 <Checkbox value="device_charging">Device Charging</Checkbox>
               </CheckboxGroup>
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="flat" onPress={onClose}>Cancel</Button>
-              <Button color="primary" onPress={handleUpdateRoom}>Save Changes</Button>
+              <Button color="primary" onPress={handleUpdateRoom}>Save</Button>
             </ModalFooter>
           </>
         )}
