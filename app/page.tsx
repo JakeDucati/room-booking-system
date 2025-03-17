@@ -1,6 +1,6 @@
 "use client";
 
-import { Input, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Input, Spinner, useDisclosure } from "@nextui-org/react";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 
@@ -122,7 +122,19 @@ export default function Home() {
       />
       <section className="flex">
         <div className="w-64 p-2">
-          <Input label="Search" type="text" />
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="bordered">Filter</Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem key="new"><Input label="Search" /></DropdownItem>
+              <DropdownItem key="copy">Copy link</DropdownItem>
+              <DropdownItem key="edit">Edit file</DropdownItem>
+              <DropdownItem key="delete" className="text-danger" color="danger">
+                Delete file
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <ThemeSwitch />
         <div className="w-full flex justify-center items-center">

@@ -56,15 +56,17 @@ export async function POST(req: Request) {
       await writeFile(filePath, buffer);
     }
 
-    const newRoom = await prisma.room.create({
-      data: {
-        name,
-        number: parseInt(roomNumber),
-        capacity: parseInt(capacity),
-        features: features.length > 0 ? features.join(",") : null,
-        notes,
-        image: imagePath,
-      },
+    const newRoom = await prisma.$transaction(async (prisma) => {
+      return await prisma.room.create({
+        data: {
+          name,
+          number: parseInt(roomNumber),
+          capacity: parseInt(capacity),
+          features: features.length > 0 ? features.join(",") : null,
+          notes,
+          image: imagePath,
+        },
+      });
     });
 
     return NextResponse.json(newRoom, { status: 201 });

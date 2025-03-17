@@ -140,7 +140,7 @@ export default function RoomCalendarItem({
           </div>
         </div>
         <div className="flex items-center pr-3">
-          <Tooltip content="Book Room" placement="right">
+          <Tooltip content={`Book Room ${room.number}`} placement="right">
             <Button isIconOnly>
               <Plus />
             </Button>
