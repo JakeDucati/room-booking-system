@@ -17,13 +17,22 @@ import {
 import { useDisclosure } from "@nextui-org/react";
 import Link from "next/link";
 
-import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
-import AddRoomModal from "@/app/admin/dashboard/components/addRoom";
 import EditRoomModal from "../components/editRoom";
 
+import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
+import AddRoomModal from "@/app/admin/dashboard/components/addRoom";
+
 export default function AdminDashboardRooms() {
-  const { isOpen: isAddOpen, onOpen: onAddOpen, onOpenChange: onAddOpenChange } = useDisclosure();
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onOpenChange: onEditOpenChange } = useDisclosure();
+  const {
+    isOpen: isAddOpen,
+    onOpen: onAddOpen,
+    onOpenChange: onAddOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onOpenChange: onEditOpenChange,
+  } = useDisclosure();
 
   const [rooms, setRooms] = useState<
     {
@@ -73,7 +82,11 @@ export default function AdminDashboardRooms() {
     <>
       {/* add room */}
       <AddRoomModal isOpen={isAddOpen} onOpenChange={onAddOpenChange} />
-      <EditRoomModal isOpen={isEditOpen} onOpenChange={onEditOpenChange} room={selectedRoom} />
+      <EditRoomModal
+        isOpen={isEditOpen}
+        room={selectedRoom}
+        onOpenChange={onEditOpenChange}
+      />
 
       <AdminDashboardHeader text="Rooms">
         <div className="flex items-center gap-2">
@@ -130,8 +143,8 @@ export default function AdminDashboardRooms() {
                 <Image
                   isBlurred
                   isZoomed
-                  src={selectedRoom.image || "/default_room.jpg"}
                   alt="photo of room"
+                  src={selectedRoom.image || "/default_room.jpg"}
                 />
                 <div className="absolute text-xs -mt-1">
                   {!selectedRoom.image && "Default Image"}

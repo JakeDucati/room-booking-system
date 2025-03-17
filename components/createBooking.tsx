@@ -27,7 +27,9 @@ export default function CreateBooking() {
             <ModalBody>
               <div>
                 <div>Room</div>
-                <Input type="number" />
+                <Input
+                  type="number"
+                />
                 <Calendar
                   defaultValue={today(getLocalTimeZone())}
                   minValue={today(getLocalTimeZone())}

@@ -3,13 +3,10 @@ import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import "react-toastify/dist/ReactToastify.css";
 
-import { ToastContainer } from "react-toastify";
-
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { useTheme } from "next-themes";
 
 export const metadata: Metadata = {
   title: {

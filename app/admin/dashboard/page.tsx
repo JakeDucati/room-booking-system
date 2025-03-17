@@ -1,9 +1,10 @@
 "use client";
 
-import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 import AdminDashboardRooms from "./rooms/page";
 import AdminDashboardSchedules from "./schedules/page";
 import AdminDashboardSettings from "./settings/page";
+
+import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 
 export default function AdminDashboard() {
   const DashboardItem = ({ children }: { children: React.ReactNode }) => {
@@ -14,7 +15,7 @@ export default function AdminDashboard() {
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <>

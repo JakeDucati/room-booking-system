@@ -54,6 +54,7 @@ export default function EditRoomModal({
   useEffect(() => {
     const fetchKey = async () => {
       const key = await getApiKey("admin");
+
       setApiKey(key);
     };
 
@@ -63,10 +64,12 @@ export default function EditRoomModal({
   const handleUpdateRoom = async () => {
     if (!apiKey || !room) {
       toast("API Key not available");
+
       return;
     }
 
     const formData = new FormData();
+
     formData.append("key", apiKey);
     formData.append("id", room.id.toString());
     formData.append("name", name);
@@ -86,6 +89,7 @@ export default function EditRoomModal({
 
       if (!response.ok) {
         toast("Failed to update room");
+
         return;
       }
 
@@ -97,7 +101,12 @@ export default function EditRoomModal({
   };
 
   return (
-    <Modal isOpen={isOpen} size="xl" onOpenChange={onOpenChange} isDismissable={false}>
+    <Modal
+      isDismissable={false}
+      isOpen={isOpen}
+      size="xl"
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -153,8 +162,12 @@ export default function EditRoomModal({
               </CheckboxGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="flat" onPress={onClose}>Cancel</Button>
-              <Button color="primary" onPress={handleUpdateRoom}>Save</Button>
+              <Button color="danger" variant="flat" onPress={onClose}>
+                Cancel
+              </Button>
+              <Button color="primary" onPress={handleUpdateRoom}>
+                Save
+              </Button>
             </ModalFooter>
           </>
         )}
