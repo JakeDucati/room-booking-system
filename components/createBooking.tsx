@@ -9,13 +9,18 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  useDisclosure,
 } from "@nextui-org/react";
 import { today, getLocalTimeZone } from "@internationalized/date";
 
-export default function CreateBooking() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+export default function CreateBooking({
+  roomNumber,
+  isOpen,
+  onOpenChange,
+}: {
+  roomNumber: number;
+  isOpen: boolean;
+  onOpenChange: () => void;
+}) {
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
@@ -27,9 +32,7 @@ export default function CreateBooking() {
             <ModalBody>
               <div>
                 <div>Room</div>
-                <Input
-                  type="number"
-                />
+                <Input type="number" />
                 <Calendar
                   defaultValue={today(getLocalTimeZone())}
                   minValue={today(getLocalTimeZone())}
