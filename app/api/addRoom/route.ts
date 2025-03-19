@@ -20,6 +20,7 @@ export async function POST(req: Request) {
     const features = JSON.parse((formData.get("features") as string) || "[]");
     const notes = (formData.get("notes") as string) || null;
     const image = formData.get("image") as File | null;
+    const status = "free";
 
     if (!validateApiKey(key)) {
       return NextResponse.json({ error: "Invalid API Key!" }, { status: 403 });
@@ -65,6 +66,7 @@ export async function POST(req: Request) {
           features: features.length > 0 ? features.join(",") : null,
           notes,
           image: imagePath,
+          status,
         },
       });
     });

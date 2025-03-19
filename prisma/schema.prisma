@@ -8,13 +8,14 @@ datasource db {
 }
 
 model Room {
-  id          Int     @id @default(autoincrement()) // unique ID for each room
+  id          Int        @id @default(autoincrement()) // unique ID for each room
   name        String
-  number      Int     @unique // room number
+  number      Int        @unique // room number
   capacity    Int
-  features    String? // json string or comma-separated values
-  notes       String? // optional notes
-  image       String?
+  features    String?
+  notes       String?
+  image       String?    // image url
+  status      String
   bookings    Booking[]
 }
 
@@ -24,5 +25,8 @@ model Booking {
   roomId    Int
   startTime DateTime
   endTime   DateTime
+  event     String   // whats happening in the booking
+  host      String   // name of host
+  scheduler String   // name of scheduler
   createdAt DateTime @default(now()) // timestamp for when the booking was created
 }

@@ -19,16 +19,22 @@ interface Booking {
   roomId: number;
   startTime: string;
   endTime: string;
+  event: string;
+  host: string;
+  scheduler: string;
+  createdAt: string;
 }
 
 export default function RoomCalendarItem({
   room,
-  onPress,
+  onBookingClick,
   timeSlots,
+  onBookRoom,
 }: {
   room: Room;
-  onPress: (room: Room) => void;
+  onBookingClick: (booking: Booking) => void;
   timeSlots: string[];
+  onBookRoom: (room: Room) => void;
 }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -88,6 +94,7 @@ export default function RoomCalendarItem({
     return new Date(localDate.toLocaleString());
   });
 
+  // schedule blocks
   const bookingBlocks = bookings.map((booking) => {
     const startDate = new Date(booking.startTime);
     const endDate = new Date(booking.endTime);
@@ -112,33 +119,38 @@ export default function RoomCalendarItem({
         key={booking.id}
         isHoverable
         isPressable
-        className="absolute p-2 bg-default"
+        className="absolute px-2 py-1 bg-default"
         style={{
           left: `${leftPosition}px`,
           width: `${width}px`,
           height: "100%",
         }}
+        onPress={() => onBookingClick(booking)}
       >
-        <div className="flex flex-col text-left w-full">
-          <div>{booking.id}</div>
-          <div>
-            {localStartDate.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })}{" "}
-            -{" "}
-            {localEndDate.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })}
+        <div className="flex flex-col text-left w-full justify-between h-full">
+          <div>{booking.event}</div>
+          <div className="text-xs flex justify-between">
+            <div>
+              {localStartDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}{" "}
+              -{" "}
+              {localEndDate.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              })}
+            </div>
+            <div>Host: {booking.host}</div>
           </div>
         </div>
       </Card>
     );
   });
 
+  // room schedule row
   return (
     <div
       className="relative flex h-18 border-y p-1"
@@ -170,7 +182,7 @@ export default function RoomCalendarItem({
         </div>
         <div className="flex items-center pr-3">
           <Tooltip content={`Book Room ${room.number}`} placement="right">
-            <Button isIconOnly>
+            <Button isIconOnly onPress={() => onBookRoom(room)}>
               <Plus />
             </Button>
           </Tooltip>

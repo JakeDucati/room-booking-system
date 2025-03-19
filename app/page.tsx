@@ -9,11 +9,12 @@ import {
   DropdownTrigger,
   Input,
   Spinner,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { AirVent, Plug, Projector, Video } from "lucide-react";
+import { AirVent, Plug, Projector, RefreshCcw, Video } from "lucide-react";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import BookingDetails from "@/components/bookingDetails";
@@ -39,17 +40,40 @@ interface Booking {
   endTime: string;
 }
 
-export default function Home() {
+export default function Scheduler() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isBookingOpen,
+    onOpen: onBookingOpen,
+    onOpenChange: onBookingOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isDetailsOpen,
+    onOpen: onDetailsOpen,
+    onOpenChange: onDetailsOpenChange,
+  } = useDisclosure();
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<Set<string>>(
     new Set(),
   );
+
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+
+  const handleBookingClick = (booking: Booking) => {
+    setSelectedBooking(booking);
+    onDetailsOpen();
+  };
+
+  const handleOpenBooking = (room: Room) => {
+    setSelectedRoom(room);
+    onBookingOpen();
+  };
+
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -66,21 +90,19 @@ export default function Home() {
     };
 
     fetchRooms();
-  }, []);
+    setReload(false);
+  }, [reload]);
 
   useEffect(() => {
     const generateTimeSlots = () => {
       const now = new Date();
-
       now.setMinutes(0, 0, 0);
+
       const slots = [];
-
-      for (let i = 0; i < 48; i++) {
+      for (let i = 0; i < 24; i++) {
         const slotTime = new Date(now);
-
         slotTime.setHours(now.getHours() + i);
         const formatted = `${slotTime.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${slotTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
-
         slots.push(formatted);
       }
       setTimeSlots(slots);
@@ -89,36 +111,34 @@ export default function Home() {
     generateTimeSlots();
   }, []);
 
+  const scrollCount = useRef(0);
+
   const loadMoreTimeSlots = () => {
-    setTimeSlots((prev) => {
-      if (prev.length === 0) return prev;
-      const lastSlot = prev[prev.length - 1];
-      const lastTime = new Date();
-      const [date, time, period] = lastSlot.split(" ");
-      const [month, day, year] = date.split("/").map(Number);
-      const [hour, minute] = time.split(":").map(Number);
-      let newHour = hour;
+    scrollCount.current += 1;
 
-      if (period === "PM" && hour !== 12) newHour += 12;
-      if (period === "AM" && hour === 12) newHour = 0;
-      lastTime.setFullYear(2000 + year, month - 1, day);
-      lastTime.setHours(newHour, minute, 0, 0);
-      const newSlots = [...prev];
+    if (scrollCount.current % 1 === 0) {
+      setTimeSlots((prev) => {
+        if (prev.length === 0) return prev;
 
-      for (let i = 0; i < 12; i++) {
+        const lastSlot = prev[prev.length - 1];
+        const lastTime = new Date();
+        const [date, time, period] = lastSlot.split(" ");
+        const [month, day, year] = date.split("/").map(Number);
+        const [hour, minute] = time.split(":").map(Number);
+
+        let newHour = hour;
+        if (period === "PM" && hour !== 12) newHour += 12;
+        if (period === "AM" && hour === 12) newHour = 0;
+
+        lastTime.setFullYear(2000 + year, month - 1, day);
+        lastTime.setHours(newHour, minute, 0, 0);
         lastTime.setHours(lastTime.getHours() + 1);
+
         const formatted = `${lastTime.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${lastTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
 
-        newSlots.push(formatted);
-      }
-
-      return newSlots;
-    });
-  };
-
-  const handleCardClick = (room: Room) => {
-    setSelectedRoom(room);
-    onOpen();
+        return [...prev, formatted];
+      });
+    }
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,16 +200,17 @@ export default function Home() {
   return (
     <>
       <CreateBooking
-        isOpen={isOpen}
-        roomNumber={selectedRoom?.number}
-        onOpenChange={onOpenChange}
+        isOpen={isBookingOpen}
+        roomNumber={selectedRoom?.number ?? 0}
+        onOpenChange={onBookingOpen}
       />
       <BookingDetails
-        isOpen={isOpen}
-        selectedRoom={selectedRoom}
-        onOpenChange={onOpenChange}
+        isOpen={isDetailsOpen}
+        // @ts-ignore
+        selectedBooking={selectedBooking}
+        onOpenChange={onDetailsOpenChange}
       />
-      <section className="flex">
+      <section className="flex items-center">
         <div className="w-64 p-2 flex gap-2">
           <Dropdown closeOnSelect={false}>
             <DropdownTrigger>
@@ -249,6 +270,16 @@ export default function Home() {
         <div className="w-full flex justify-center items-center">
           <div className="text-4xl">Room Booking</div>
         </div>
+        <Tooltip content="Reload">
+          <Button
+            isIconOnly
+            onPress={() => { setReload(true) }}
+            className="mr-2"
+            variant="flat"
+          >
+            <RefreshCcw />
+          </Button>
+        </Tooltip>
       </section>
       <section
         ref={containerRef}
@@ -268,8 +299,8 @@ export default function Home() {
               // @ts-ignore
               room={room}
               timeSlots={timeSlots}
-              // @ts-ignore
-              onPress={handleCardClick}
+              onBookingClick={handleBookingClick}
+              onBookRoom={() => handleOpenBooking(room)}
             />
           ))}
         </div>
