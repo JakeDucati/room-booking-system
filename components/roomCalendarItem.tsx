@@ -111,8 +111,8 @@ export default function RoomCalendarItem({
 
     if (startIndex === -1 || endIndex === -1) return null;
 
-    const leftPosition = startIndex * 260;
-    const width = (endIndex - startIndex) * 260;
+    const leftPosition = startIndex * 270.5;
+    const width = (endIndex - startIndex) * 270.5;
 
     return (
       <Card

@@ -14,12 +14,13 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { AirVent, Plug, Projector, RefreshCcw, Video } from "lucide-react";
+import { AirVent, ChartArea, Plug, Projector, RefreshCcw, Video } from "lucide-react";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import BookingDetails from "@/components/bookingDetails";
 import RoomCalendarItem from "@/components/roomCalendarItem";
 import CreateBooking from "@/components/createBooking";
+import Link from "next/link";
 
 interface Room {
   number: number;
@@ -30,6 +31,7 @@ interface Room {
   name: string;
   capacity: number;
   features: string;
+  image: string;
   bookings: Booking[];
 }
 
@@ -74,7 +76,6 @@ export default function Scheduler() {
     onBookingOpen();
   };
 
-
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -99,46 +100,67 @@ export default function Scheduler() {
       now.setMinutes(0, 0, 0);
 
       const slots = [];
-      for (let i = 0; i < 24; i++) {
+      for (let i = -12; i < 24; i++) {
         const slotTime = new Date(now);
         slotTime.setHours(now.getHours() + i);
         const formatted = `${slotTime.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${slotTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
         slots.push(formatted);
       }
       setTimeSlots(slots);
+
+      setTimeout(() => {
+        if (containerRef.current) {
+          const todayIndex = slots.findIndex(slot => slot.includes(now.toLocaleDateString()));
+          if (todayIndex !== -1) {
+            containerRef.current.scrollLeft = todayIndex * 120;
+          }
+        }
+      }, 100);
     };
 
     generateTimeSlots();
   }, []);
 
-  const scrollCount = useRef(0);
+  const loadMoreTimeSlots = (direction: "forward" | "backward") => {
+    setTimeSlots((prev) => {
+      if (prev.length === 0) return prev;
 
-  const loadMoreTimeSlots = () => {
-    scrollCount.current += 1;
+      const newSlots = [...prev];
 
-    if (scrollCount.current % 1 === 0) {
-      setTimeSlots((prev) => {
-        if (prev.length === 0) return prev;
+      if (direction === "forward") {
+        const lastSlot = parseTimeSlot(prev[prev.length - 1]);
+        for (let i = 1; i <= 1; i++) {
+          const nextTime = new Date(lastSlot);
+          nextTime.setHours(lastSlot.getHours() + i);
+          newSlots.push(formatTimeSlot(nextTime));
+        }
+      } else if (direction === "backward") {
+        const firstSlot = parseTimeSlot(prev[0]);
+        for (let i = 1; i <= 1; i++) {
+          const prevTime = new Date(firstSlot);
+          prevTime.setHours(firstSlot.getHours() - i);
+          newSlots.unshift(formatTimeSlot(prevTime));
+        }
+      }
 
-        const lastSlot = prev[prev.length - 1];
-        const lastTime = new Date();
-        const [date, time, period] = lastSlot.split(" ");
-        const [month, day, year] = date.split("/").map(Number);
-        const [hour, minute] = time.split(":").map(Number);
+      return newSlots;
+    });
+  };
 
-        let newHour = hour;
-        if (period === "PM" && hour !== 12) newHour += 12;
-        if (period === "AM" && hour === 12) newHour = 0;
+  const parseTimeSlot = (slot: string) => {
+    const [date, time, period] = slot.split(" ");
+    const [month, day, year] = date.split("/").map(Number);
+    const [hour, minute] = time.split(":").map(Number);
 
-        lastTime.setFullYear(2000 + year, month - 1, day);
-        lastTime.setHours(newHour, minute, 0, 0);
-        lastTime.setHours(lastTime.getHours() + 1);
+    let newHour = hour;
+    if (period === "PM" && hour !== 12) newHour += 12;
+    if (period === "AM" && hour === 12) newHour = 0;
 
-        const formatted = `${lastTime.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${lastTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
+    return new Date(2000 + year, month - 1, day, newHour, minute);
+  };
 
-        return [...prev, formatted];
-      });
-    }
+  const formatTimeSlot = (date: Date) => {
+    return `${date.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,6 +224,7 @@ export default function Scheduler() {
       <CreateBooking
         isOpen={isBookingOpen}
         roomNumber={selectedRoom?.number ?? 0}
+        roomImageUrl={selectedRoom?.image}
         onOpenChange={onBookingOpen}
       />
       <BookingDetails
@@ -270,22 +293,33 @@ export default function Scheduler() {
         <div className="w-full flex justify-center items-center">
           <div className="text-4xl">Room Booking</div>
         </div>
-        <Tooltip content="Reload">
-          <Button
-            isIconOnly
-            onPress={() => { setReload(true) }}
-            className="mr-2"
-            variant="flat"
-          >
-            <RefreshCcw />
-          </Button>
-        </Tooltip>
+        <div className="mr-2 flex gap-2">
+          <Tooltip content="Reload">
+            <Button
+              isIconOnly
+              onPress={() => { setReload(true) }}
+              variant="flat"
+            >
+              <RefreshCcw />
+            </Button>
+          </Tooltip>
+          <Tooltip content="Analytics">
+            <Button
+              isIconOnly
+              as={Link}
+              href="/analytics"
+              variant="flat"
+            >
+              <ChartArea />
+            </Button>
+          </Tooltip>
+        </div>
       </section>
       <section
         ref={containerRef}
         className="overflow-x-scroll h-full"
         id="scrollContainer"
-        onScroll={() => loadMoreTimeSlots()}
+        onScroll={() => loadMoreTimeSlots("forward")}
       >
         <div className="flex gap-32 pl-72 border-t sticky top-0 w-[max-content]">
           {timeSlots.map((time, index) => (
