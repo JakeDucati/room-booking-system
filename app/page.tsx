@@ -14,13 +14,20 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { AirVent, ChartArea, Plug, Projector, RefreshCcw, Video } from "lucide-react";
+import {
+  AirVent,
+  ChartArea,
+  Plug,
+  Projector,
+  RefreshCcw,
+  Video,
+} from "lucide-react";
+import Link from "next/link";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import BookingDetails from "@/components/bookingDetails";
 import RoomCalendarItem from "@/components/roomCalendarItem";
 import CreateBooking from "@/components/createBooking";
-import Link from "next/link";
 
 interface Room {
   number: number;
@@ -79,47 +86,73 @@ export default function Scheduler() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
+        setLoading(true);
         const response = await fetch("/api/rooms");
         const data = await response.json();
 
         setRooms(data);
-        setLoading(false);
       } catch (error) {
         toast("Error fetching room data!");
+      } finally {
         setLoading(false);
+        setReload(false);
       }
     };
 
-    fetchRooms();
-    setReload(false);
+    if (reload || rooms.length === 0) {
+      fetchRooms();
+    }
   }, [reload]);
 
   useEffect(() => {
     const generateTimeSlots = () => {
       const now = new Date();
+
       now.setMinutes(0, 0, 0);
 
-      const slots = [];
+      const slots: string[] = [];
+
       for (let i = -12; i < 24; i++) {
         const slotTime = new Date(now);
+
         slotTime.setHours(now.getHours() + i);
         const formatted = `${slotTime.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${slotTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
+
         slots.push(formatted);
       }
+
       setTimeSlots(slots);
 
       setTimeout(() => {
         if (containerRef.current) {
-          const todayIndex = slots.findIndex(slot => slot.includes(now.toLocaleDateString()));
+          const nowFormatted = `${now.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
+          const todayIndex = slots.findIndex((slot) =>
+            slot.startsWith(nowFormatted.split(" ")[0]),
+          );
+
           if (todayIndex !== -1) {
-            containerRef.current.scrollLeft = todayIndex * 120;
+            containerRef.current.scrollLeft = todayIndex * 3160;
           }
         }
-      }, 100);
+      }, 800);
     };
 
     generateTimeSlots();
-  }, []);
+  }, [reload]);
+
+  const scrollToToday = () => {
+    if (containerRef.current && timeSlots.length > 0) {
+      const now = new Date();
+      const nowFormatted = `${now.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
+      const todayIndex = timeSlots.findIndex((slot) =>
+        slot.startsWith(nowFormatted.split(" ")[0]),
+      );
+
+      if (todayIndex !== -1) {
+        containerRef.current.scrollLeft = todayIndex * 3160;
+      }
+    }
+  };
 
   const loadMoreTimeSlots = (direction: "forward" | "backward") => {
     setTimeSlots((prev) => {
@@ -129,15 +162,19 @@ export default function Scheduler() {
 
       if (direction === "forward") {
         const lastSlot = parseTimeSlot(prev[prev.length - 1]);
+
         for (let i = 1; i <= 1; i++) {
           const nextTime = new Date(lastSlot);
+
           nextTime.setHours(lastSlot.getHours() + i);
           newSlots.push(formatTimeSlot(nextTime));
         }
       } else if (direction === "backward") {
         const firstSlot = parseTimeSlot(prev[0]);
+
         for (let i = 1; i <= 1; i++) {
           const prevTime = new Date(firstSlot);
+
           prevTime.setHours(firstSlot.getHours() - i);
           newSlots.unshift(formatTimeSlot(prevTime));
         }
@@ -153,6 +190,7 @@ export default function Scheduler() {
     const [hour, minute] = time.split(":").map(Number);
 
     let newHour = hour;
+
     if (period === "PM" && hour !== 12) newHour += 12;
     if (period === "AM" && hour === 12) newHour = 0;
 
@@ -223,9 +261,9 @@ export default function Scheduler() {
     <>
       <CreateBooking
         isOpen={isBookingOpen}
+        roomImageUrl={selectedRoom?.image ?? ""}
         roomNumber={selectedRoom?.number ?? 0}
-        roomImageUrl={selectedRoom?.image}
-        onOpenChange={onBookingOpen}
+        onOpenChange={onBookingOpenChange}
       />
       <BookingDetails
         isOpen={isDetailsOpen}
@@ -294,22 +332,16 @@ export default function Scheduler() {
           <div className="text-4xl">Room Booking</div>
         </div>
         <div className="mr-2 flex gap-2">
+          <Button variant="flat" onPress={scrollToToday}>
+            Today
+          </Button>
           <Tooltip content="Reload">
-            <Button
-              isIconOnly
-              onPress={() => { setReload(true) }}
-              variant="flat"
-            >
+            <Button isIconOnly variant="flat" onPress={() => setReload(true)}>
               <RefreshCcw />
             </Button>
           </Tooltip>
           <Tooltip content="Analytics">
-            <Button
-              isIconOnly
-              as={Link}
-              href="/analytics"
-              variant="flat"
-            >
+            <Button isIconOnly as={Link} href="/analytics" variant="flat">
               <ChartArea />
             </Button>
           </Tooltip>
@@ -329,12 +361,12 @@ export default function Scheduler() {
         <div>
           {filteredRooms.map((room) => (
             <RoomCalendarItem
+              timeSlots={timeSlots}
+              onBookRoom={() => handleOpenBooking(room)}
+              onBookingClick={handleBookingClick}
               key={room.number}
               // @ts-ignore
               room={room}
-              timeSlots={timeSlots}
-              onBookingClick={handleBookingClick}
-              onBookRoom={() => handleOpenBooking(room)}
             />
           ))}
         </div>

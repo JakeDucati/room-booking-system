@@ -29,6 +29,7 @@ export default function BookingDetails({
 }) {
   const formatToLocalTime = (dateString: string) => {
     const date = new Date(dateString);
+
     return new Intl.DateTimeFormat(navigator.language, {
       month: "numeric",
       day: "numeric",
@@ -45,7 +46,7 @@ export default function BookingDetails({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {selectedBooking ? (selectedBooking.event) : ("Details")}
+              {selectedBooking ? selectedBooking.event : "Details"}
             </ModalHeader>
             <ModalBody>
               {selectedBooking ? (
@@ -54,12 +55,8 @@ export default function BookingDetails({
                     {formatToLocalTime(selectedBooking.startTime)} -{" "}
                     {formatToLocalTime(selectedBooking.endTime)}
                   </div>
-                  <div>
-                    Host: {selectedBooking.host}
-                  </div>
-                  <div>
-                    Scheduler: {selectedBooking.scheduler}
-                  </div>
+                  <div>Host: {selectedBooking.host}</div>
+                  <div>Scheduler: {selectedBooking.scheduler}</div>
                   <div>
                     Scheduled at {formatToLocalTime(selectedBooking.createdAt)}
                   </div>
