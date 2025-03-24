@@ -33,8 +33,6 @@ export async function POST(req: any) {
 
     return NextResponse.json({ message: "Added new API key", key: newApiKey });
   } catch (error) {
-    console.error("Error adding API key:", error);
-
     return NextResponse.json(
       { error: "Failed to add API key" },
       { status: 500 },

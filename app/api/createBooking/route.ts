@@ -65,6 +65,7 @@ export async function POST(req: Request) {
         roomId,
         startTime: startUTC,
         endTime: endUTC,
+        // @ts-ignore
         event,
         host,
         scheduler,
@@ -73,8 +74,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newBooking, { status: 201 });
   } catch (error) {
-    console.error("Error creating booking:", error);
-
     return NextResponse.json(
       { error: "Failed to create booking" },
       { status: 500 },

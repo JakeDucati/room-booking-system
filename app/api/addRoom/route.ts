@@ -66,6 +66,7 @@ export async function POST(req: Request) {
           features: features.length > 0 ? features.join(",") : null,
           notes,
           image: imagePath,
+          // @ts-ignore
           status,
         },
       });

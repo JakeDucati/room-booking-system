@@ -25,8 +25,6 @@ export async function POST(req: any) {
 
     return NextResponse.json({ keys: keysArray });
   } catch (error) {
-    console.error("Error fetching API keys:", error);
-
     return NextResponse.json(
       { error: "Failed to retrieve API keys" },
       { status: 500 },

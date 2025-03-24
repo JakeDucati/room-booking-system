@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
+  Kbd,
   Spinner,
   Tooltip,
   useDisclosure,
@@ -17,6 +18,7 @@ import { toast } from "react-toastify";
 import {
   AirVent,
   ChartArea,
+  Mouse,
   Plug,
   Projector,
   RefreshCcw,
@@ -122,37 +124,26 @@ export default function Scheduler() {
       }
 
       setTimeSlots(slots);
-
-      setTimeout(() => {
-        if (containerRef.current) {
-          const nowFormatted = `${now.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
-          const todayIndex = slots.findIndex((slot) =>
-            slot.startsWith(nowFormatted.split(" ")[0]),
-          );
-
-          if (todayIndex !== -1) {
-            containerRef.current.scrollLeft = todayIndex * 3160;
-          }
-        }
-      }, 800);
     };
 
     generateTimeSlots();
   }, [reload]);
 
   const scrollToToday = () => {
-    if (containerRef.current && timeSlots.length > 0) {
-      const now = new Date();
-      const nowFormatted = `${now.toLocaleDateString([], { month: "numeric", day: "numeric", year: "2-digit" })} ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}`;
-      const todayIndex = timeSlots.findIndex((slot) =>
-        slot.startsWith(nowFormatted.split(" ")[0]),
-      );
-
-      if (todayIndex !== -1) {
-        containerRef.current.scrollLeft = todayIndex * 3160;
-      }
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ left: 3200, behavior: "smooth" });
     }
   };
+
+  useEffect(() => {
+    setTimeout(scrollToToday, 800);
+  }, [reload]);
+
+  useEffect(() => {
+    if (!isBookingOpen) {
+      setReload(true);
+    }
+  }, [isBookingOpen]);
 
   const loadMoreTimeSlots = (direction: "forward" | "backward") => {
     setTimeSlots((prev) => {
@@ -331,7 +322,12 @@ export default function Scheduler() {
         <div className="w-full flex justify-center items-center">
           <div className="text-4xl">Room Booking</div>
         </div>
-        <div className="mr-2 flex gap-2">
+        <div className="mr-2 flex gap-2 items-center">
+          <Tooltip content="Shift + Scroll">
+            <Kbd className="h-8" keys={"shift"}>
+              <Mouse size={16} />
+            </Kbd>
+          </Tooltip>
           <Button variant="flat" onPress={scrollToToday}>
             Today
           </Button>

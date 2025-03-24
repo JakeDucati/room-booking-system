@@ -2,13 +2,7 @@
 
 import { Button } from "@nextui-org/button";
 import { Copy, HelpCircle, Plus } from "lucide-react";
-import {
-  Card,
-  Divider,
-  Input,
-  Tooltip,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Card, Divider, Tooltip, useDisclosure } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -123,12 +117,12 @@ export default function AdminDashboardSettings() {
               <div className="text-xl font-bold">General</div>
             </div>
             <div className="flex flex-col gap-4">
-              <OptionsItem
+              {/* <OptionsItem
                 label="Pending Room Timeout"
                 tooltip="Time until room is released from its schedule when in a pending state (no-show)."
               >
                 <Input className="w-36" label="Minutes" type="number" />
-              </OptionsItem>
+              </OptionsItem> */}
             </div>
           </div>
           <Divider

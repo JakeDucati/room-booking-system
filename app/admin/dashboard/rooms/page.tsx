@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 import { useDisclosure } from "@nextui-org/react";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 import EditRoomModal from "../components/editRoom";
+import DeleteRoomModal from "../components/deleteRoom";
 
 import AdminDashboardHeader from "@/app/admin/dashboard/components/adminDashboardHeader";
 import AddRoomModal from "@/app/admin/dashboard/components/addRoom";
@@ -32,6 +34,11 @@ export default function AdminDashboardRooms() {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onOpenChange: onEditOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
   } = useDisclosure();
 
   const [rooms, setRooms] = useState<
@@ -71,8 +78,8 @@ export default function AdminDashboardRooms() {
       .then((data) => {
         setRooms(data);
       })
-      .catch((err) => console.error("Failed to fetch rooms:", err));
-  }, [onAddOpenChange, onEditOpenChange]);
+      .catch((err) => toast.error("Failed to fetch rooms"));
+  }, [onAddOpenChange, onEditOpenChange, onDeleteOpenChange]);
 
   useEffect(() => {
     setSelectedRoom(selectedRoom);
@@ -80,12 +87,17 @@ export default function AdminDashboardRooms() {
 
   return (
     <>
-      {/* add room */}
+      {/* room modals */}
       <AddRoomModal isOpen={isAddOpen} onOpenChange={onAddOpenChange} />
       <EditRoomModal
         isOpen={isEditOpen}
         room={selectedRoom}
         onOpenChange={onEditOpenChange}
+      />
+      <DeleteRoomModal
+        isOpen={isDeleteOpen}
+        room={selectedRoom}
+        onOpenChange={onDeleteOpenChange}
       />
 
       <AdminDashboardHeader text="Rooms">
@@ -114,7 +126,7 @@ export default function AdminDashboardRooms() {
               key={room.id}
               isHoverable
               isPressable
-              className={`p-3 min-h-[76px] ${selectedRoom?.id === room.id ? "border border-blue-500" : ""}`}
+              className={`p-3 min-h-[76px] ${selectedRoom?.id === room.id ? "border border-primary" : ""}`}
               // @ts-ignore
               onPress={() => setSelectedRoom(room)}
             >
@@ -196,7 +208,12 @@ export default function AdminDashboardRooms() {
                   <Button fullWidth variant="ghost" onPress={onEditOpen}>
                     <Pencil /> Edit Details
                   </Button>
-                  <Button fullWidth color="danger" variant="flat">
+                  <Button
+                    fullWidth
+                    color="danger"
+                    variant="flat"
+                    onPress={onDeleteOpen}
+                  >
                     <Trash2 /> Delete Room
                   </Button>
                 </div>

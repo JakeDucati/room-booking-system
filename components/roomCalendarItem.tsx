@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Tooltip, Button, Spinner } from "@nextui-org/react";
 import { Projector, Video, AirVent, Plug, User, Plus } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface Room {
   number: number;
@@ -47,7 +48,7 @@ export default function RoomCalendarItem({
 
         setBookings(data);
       } catch (error) {
-        console.error("Error fetching bookings:", error);
+        toast.error("Error fetching bookings");
       } finally {
         setLoading(false);
       }
@@ -95,6 +96,21 @@ export default function RoomCalendarItem({
   });
 
   // schedule blocks
+  const getFractionalIndex = (date: Date) => {
+    for (let i = 0; i < timeSlotDates.length - 1; i++) {
+      const start = timeSlotDates[i].getTime();
+      const end = timeSlotDates[i + 1].getTime();
+
+      if (date.getTime() >= start && date.getTime() < end) {
+        const fraction = (date.getTime() - start) / (end - start);
+
+        return i + fraction;
+      }
+    }
+
+    return timeSlotDates.length - 1;
+  };
+
   const bookingBlocks = bookings.map((booking) => {
     const startDate = new Date(booking.startTime);
     const endDate = new Date(booking.endTime);
@@ -102,12 +118,8 @@ export default function RoomCalendarItem({
     const localStartDate = new Date(startDate.toLocaleString());
     const localEndDate = new Date(endDate.toLocaleString());
 
-    const startIndex = timeSlotDates.findIndex(
-      (slot) => slot.getTime() === localStartDate.getTime(),
-    );
-    const endIndex = timeSlotDates.findIndex(
-      (slot) => slot.getTime() === localEndDate.getTime(),
-    );
+    const startIndex = getFractionalIndex(localStartDate);
+    const endIndex = getFractionalIndex(localEndDate);
 
     if (startIndex === -1 || endIndex === -1) return null;
 

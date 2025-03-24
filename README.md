@@ -26,7 +26,6 @@ A modern, fast, and clean solution for managing room reservations with ease. Bui
 - **[Next.js](https://nextjs.org/)**
 - **[Tailwind CSS](https://tailwindcss.com/)**
 - **[NextUI](https://nextui.org/)**
-<!-- - **[better-sqlite3](https://www.npmjs.com/package/better-sqlite3)** -->
 
 ---
 

@@ -18,7 +18,7 @@ import {
   Time,
   CalendarDate,
 } from "@internationalized/date";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function CreateBooking({
@@ -32,13 +32,17 @@ export default function CreateBooking({
   isOpen: boolean;
   onOpenChange: () => void;
 }) {
-  const [room, setRoom] = useState<number>(roomNumber);
+  const [room, setRoom] = useState<number | undefined>(undefined);
   const [scheduler, setScheduler] = useState("");
   const [host, setHost] = useState("");
   const [event, setEvent] = useState("");
   const [startTime, setStartTime] = useState<Time | null>(null);
   const [endTime, setEndTime] = useState<Time | null>(null);
   const [date, setDate] = useState<CalendarDate>(today(getLocalTimeZone()));
+
+  useEffect(() => {
+    setRoom(roomNumber);
+  }, [roomNumber]);
 
   const handleScheduleRoom = async () => {
     try {
@@ -53,14 +57,6 @@ export default function CreateBooking({
         `${formattedDate}T${startTime.toString()}`,
       );
       const endDateTime = new Date(`${formattedDate}T${endTime.toString()}`);
-
-      console.log("Room: " + room);
-      console.log("Start: " + startDateTime.toISOString());
-      console.log("End: " + endDateTime.toISOString());
-      console.log("Event: " + event);
-      console.log("Host: " + host);
-      console.log("Scheduler: " + scheduler);
-      console.log("Date: " + formattedDate);
 
       const response = await fetch("/api/createBooking", {
         method: "POST",
@@ -98,9 +94,7 @@ export default function CreateBooking({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>
-              <h2>Create Booking</h2>
-            </ModalHeader>
+            <ModalHeader>Create Booking</ModalHeader>
             <ModalBody>
               <div className="flex justify-between gap-4">
                 <div className="w-full flex flex-col gap-2">
@@ -111,7 +105,8 @@ export default function CreateBooking({
                         isRequired
                         label="Room #"
                         type="number"
-                        value={room.toString()}
+                        // @ts-ignore
+                        value={room}
                         onChange={(e) => setRoom(Number(e.target.value))}
                       />
                       <Input

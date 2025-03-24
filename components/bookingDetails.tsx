@@ -6,6 +6,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/react";
+import { Calendar, Clock, User } from "lucide-react";
 
 interface Booking {
   id: number;
@@ -51,13 +52,21 @@ export default function BookingDetails({
             <ModalBody>
               {selectedBooking ? (
                 <>
-                  <div>
+                  <div className="flex items-center gap-2">
+                    <Clock />
                     {formatToLocalTime(selectedBooking.startTime)} -{" "}
                     {formatToLocalTime(selectedBooking.endTime)}
                   </div>
-                  <div>Host: {selectedBooking.host}</div>
-                  <div>Scheduler: {selectedBooking.scheduler}</div>
-                  <div>
+                  <div className="flex items-center gap-2">
+                    <User />
+                    Host: {selectedBooking.host}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <User />
+                    Scheduler: {selectedBooking.scheduler}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar />
                     Scheduled at {formatToLocalTime(selectedBooking.createdAt)}
                   </div>
                 </>
